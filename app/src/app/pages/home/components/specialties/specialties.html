@@ -1,0 +1,22 @@
+<section class="specialties" id="especialidades">
+  <h2 class="specialties__title">Especialidades de nuestros profesionales</h2>
+
+  <div class="specialties__row">
+    <ul class="specialties__list specialties__list--left">
+      @for (item of leftList(); track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+
+    <div class="specialties__illustration">
+      <img src="assets/uploads/shared/SecondarySerena.png" alt="" class="specialties__illustration-frame" aria-hidden="true" />
+
+    </div>
+
+    <ul class="specialties__list specialties__list--right">
+      @for (item of rightList(); track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  </div>
+</section>

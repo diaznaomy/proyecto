@@ -1,0 +1,301 @@
+:host {
+  display: block;
+}
+
+.doc-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #a0bbb2;
+  margin-bottom: 6px;
+}
+
+/* ===== KPI cards ===== */
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+
+.kpi-card {
+  border-radius: 22px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(81, 54, 29, 0.06);
+}
+
+.kpi-card strong {
+  font-size: 30px;
+  font-weight: 800;
+  color: #51361d;
+  line-height: 1.1;
+}
+
+.kpi-caption {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a7869;
+}
+
+.kpi-card.pink { background: #f8dfe5; }
+.kpi-card.mint { background: #dcebe7; }
+.kpi-card.cream { background: #f1e7c8; }
+.kpi-card.white { background: #ffffff; }
+
+/* Café solo como acento/borde, nunca fondo sólido grande: la tarjeta "dark"
+   pasa a usar rosa (acción/actividad destacada) con café solo en detalles. */
+.kpi-card.dark {
+  background: linear-gradient(135deg, #da7d91, #c96a80);
+  box-shadow: 0 10px 24px rgba(218, 125, 145, 0.3);
+}
+.kpi-card.dark strong,
+.kpi-card.dark .kpi-caption,
+.kpi-card.dark .section-label {
+  color: #f6fffa;
+}
+.kpi-card.dark .section-label { color: rgba(246, 255, 250, 0.85); }
+
+
+/* ===== Chart grid ===== */
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.chart-card {
+  border-radius: 22px;
+  padding: 16px 18px;
+  box-sizing: border-box;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 22px rgba(81, 54, 29, 0.05);
+}
+
+.chart-card.wide {
+  background: #ffffff;
+  min-height: 200px;
+}
+
+.chart-box {
+  position: relative;
+  flex: 1;
+  margin-top: 10px;
+}
+
+.chart-box.small {
+  max-height: 130px;
+}
+
+.chart-card h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #51361d;
+}
+
+.chart-card.cream { background: #f1e7c8; }
+.chart-card.pink  { background: #f8dfe5; }
+.chart-card.mint  { background: #dcebe7; }
+.chart-card.white { background: #ffffff; }
+.chart-card.wide  { background: #ffffff; min-height: 260px; }
+
+/* ===== Patients layout ===== */
+
+.patients-layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.patients-list-card,
+.patient-detail-card {
+  background: #ffffff;
+  border: none;
+  border-radius: 26px;
+  box-shadow: 0 12px 32px rgba(81, 54, 29, 0.07);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 22px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(160, 187, 178, 0.2);
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #51361d;
+}
+
+.patients-list {
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.patient-row {
+  display: grid;
+  grid-template-columns: 40px 1fr auto 18px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(160, 187, 178, 0.14);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.patient-row:hover {
+  background: #fbf6ee;
+}
+
+.patient-row.active {
+  background: #fbeaef;
+}
+
+.patient-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #a0bbb2;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 6px 14px rgba(160, 187, 178, 0.35);
+}
+
+.patient-main strong {
+  display: block;
+  font-size: 13px;
+  color: #51361d;
+}
+
+.patient-main span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: #918174;
+}
+
+.status {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: #8a6d35;
+  text-transform: capitalize;
+  background: #f1e7c8;
+}
+
+.chevron {
+  color: #c9bba9;
+  font-size: 18px;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.chevron.open {
+  transform: rotate(90deg);
+  color: #da7d91;
+}
+
+/* ===== Detail card ===== */
+
+.status-pill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 7px 14px;
+  border-radius: 999px;
+  text-transform: capitalize;
+  color: #ffffff;
+  background: #a0bbb2;
+  box-shadow: 0 6px 14px rgba(160, 187, 178, 0.3);
+}
+
+.status-pill[data-estado='pendiente']  { background: #e0b94a; box-shadow: 0 6px 14px rgba(224, 185, 74, 0.3); }
+.status-pill[data-estado='cancelada']  { background: #da7d91; box-shadow: 0 6px 14px rgba(218, 125, 145, 0.3); }
+.status-pill[data-estado='completada'] { background: #51361d; box-shadow: 0 6px 14px rgba(81, 54, 29, 0.25); }
+
+.detail-body {
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-block p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #51361d;
+}
+
+.detail-block p strong {
+  color: #78695e;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.resena {
+  background: #fbf6ee;
+  border-left: 3px solid #da7d91;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-style: italic;
+  color: #6b5b4c;
+}
+
+.empty-state {
+  padding: 34px 24px;
+  color: #918174;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 1400px) {
+  .chart-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1100px) {
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .chart-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .patients-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}

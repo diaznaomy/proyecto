@@ -1,0 +1,135 @@
+<div class="quiz-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <!-- ============ HERO ============ -->
+    <div class="page-hero">
+      <div class="hero-content">
+        <span class="hero-label">✨ Quiz personalizado</span>
+        <h1>Encontrando a mi profesional ideal</h1>
+        <p *ngIf="!mostrarResultados()">
+          Responde estas preguntas y te sugerimos las profesionales que mejor se ajustan a ti.
+        </p>
+        <p *ngIf="mostrarResultados()">
+          Con base en tus respuestas, estas son las mejores opciones para ti.
+        </p>
+
+        <div class="barra-progreso" *ngIf="!mostrarResultados()">
+          <div class="barra-progreso__relleno" [style.width.%]="progreso"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CARD: CARGANDO ============ -->
+    <div class="page-card" *ngIf="cargando()">
+      <div class="card-content">
+        <div class="state-container">
+          <div class="state-icon">⏳</div>
+          <h3>Buscando profesionales disponibles</h3>
+          <p>Estamos preparando tus opciones, un momento por favor.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CARD: QUIZ ============ -->
+    <div class="page-card" *ngIf="!cargando() && !mostrarResultados()">
+      <div class="card-content">
+        <form [formGroup]="form" class="quiz-form">
+          <!-- Paso 0: Edad -->
+          <div class="paso" *ngIf="pasoActual() === 0">
+            <label for="edad">¿Cuál es tu edad?</label>
+            <input id="edad" type="number" formControlName="edad" placeholder="Ej: 28" min="13" max="99" />
+            <p class="error" *ngIf="form.get('edad')?.touched && form.get('edad')?.invalid">
+              Ingresa una edad válida (entre 13 y 99 años).
+            </p>
+          </div>
+
+          <!-- Paso 1: Ubicación y modalidad -->
+          <div class="paso" *ngIf="pasoActual() === 1">
+            <label for="provincia">¿En qué provincia vives?</label>
+            <select id="provincia" formControlName="provinciaPreferida">
+              <option value="Cualquiera">No tengo preferencia</option>
+              <option *ngFor="let provincia of provincias" [value]="provincia">{{ provincia }}</option>
+            </select>
+
+            <label for="modalidad" class="mt">¿Cómo prefieres tus consultas?</label>
+            <select id="modalidad" formControlName="modalidadPreferida">
+              <option value="Cualquiera">No tengo preferencia</option>
+              <option value="Virtual">Virtual</option>
+              <option value="Presencial">Presencial</option>
+              <option value="Mixta">Mixta (ambas)</option>
+            </select>
+          </div>
+
+          <!-- Paso 2: Qué busca -->
+          <div class="paso" *ngIf="pasoActual() === 2">
+            <label>¿Qué tipo de acompañamiento buscas? (elige una o varias)</label>
+            <div class="chips">
+              <button
+                type="button"
+                class="chip"
+                *ngFor="let tipo of tiposInteres"
+                [class.chip--activo]="esInteresSeleccionado(tipo)"
+                (click)="toggleInteres(tipo)"
+              >
+                {{ tipo }}
+              </button>
+            </div>
+            <p
+              class="error"
+              *ngIf="form.get('tiposInteres')?.touched && (form.get('tiposInteres')?.value ?? []).length === 0"
+            >
+              Selecciona al menos una opción.
+            </p>
+          </div>
+
+          <!-- Paso 3: Presupuesto -->
+          <div class="paso" *ngIf="pasoActual() === 3">
+            <label for="presupuesto">¿Cuál es tu presupuesto máximo por consulta? (opcional)</label>
+            <input id="presupuesto" type="number" formControlName="presupuestoMax" placeholder="Ej: 30000" min="0" />
+            <p class="ayuda">Puedes dejarlo en blanco si prefieres ver todas las opciones.</p>
+          </div>
+
+          <div class="quiz-acciones">
+            <button type="button" class="btn btn--secundario" (click)="atras()" [disabled]="pasoActual() === 0">
+              Atrás
+            </button>
+            <button type="button" class="btn btn--primario" (click)="siguiente()">
+              {{ pasoActual() === totalPasos - 1 ? 'Ver mis profesionales sugeridas' : 'Siguiente' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============ CARD: RESULTADOS ============ -->
+    <div class="page-card resultados" *ngIf="mostrarResultados()">
+      <div class="card-content">
+        <span class="section-label" *ngIf="resultados().length > 0">Resultados</span>
+
+        <div class="state-container" *ngIf="resultados().length === 0">
+          <div class="state-icon">🔍</div>
+          <h3>No encontramos coincidencias exactas</h3>
+          <p>Intenta ajustar tus preferencias, por ejemplo ampliando la modalidad o el presupuesto.</p>
+        </div>
+
+        <div class="tarjeta-profesional" *ngFor="let p of resultados()">
+          <div class="tarjeta-profesional__info">
+            <h3>{{ p.nombreCompleto }}</h3>
+            <p class="titulo">{{ p.tituloProfesional }}</p>
+            <p class="ubicacion">{{ p.ubicacion.provincia }} · {{ p.aniosExperiencia }} años de experiencia</p>
+            <ul class="razones">
+              <li *ngFor="let razon of p.razones">{{ razon }}</li>
+            </ul>
+            <p class="tarifa">Desde ₡{{ p.tarifaBase | number }}</p>
+          </div>
+        </div>
+
+        <div class="quiz-acciones">
+          <button type="button" class="btn btn--secundario" (click)="reiniciar()">Volver a empezar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

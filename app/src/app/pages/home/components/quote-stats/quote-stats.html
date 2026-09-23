@@ -1,0 +1,21 @@
+<section class="quote-stats">
+  <img class="quote-stats__bg" src="assets/uploads/home/healing.png" alt="Flores que representan sanación y renovación" />
+
+  <div class="quote-stats__overlay">
+    <div class="quote-stats__doily">
+      <img class="quote-stats__doily-frame" src="assets/uploads/home/EncajeCircular.png" alt="" aria-hidden="true" />
+      <p class="quote-stats__quote">
+        Sanar no es<br />una línea<br />recta, pero<br />tampoco<br />debe de ser<br />un círculo
+      </p>
+    </div>
+
+    <div class="quote-stats__grid">
+      @for (stat of stats(); track stat.label) {
+        <div class="stat">
+          <span class="stat__value">{{ stat.value }}</span>
+          <span class="stat__label">{{ stat.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>

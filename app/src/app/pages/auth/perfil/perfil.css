@@ -1,0 +1,350 @@
+/* =========================
+   PÁGINA
+   ========================= */
+
+.perfil-page {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  background-image: url('/assets/uploads/auth/SignIn.jpeg');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+
+  padding: 6rem 4rem;
+  box-sizing: border-box;
+}
+
+/* =========================
+   TARJETA 
+   ========================= */
+
+.perfil-card {
+  width: 100%;
+  max-width: 560px;              /* un poco más ancha para compensar el padding extra */
+
+  padding: 12rem 5rem 6rem;       /* más espacio lateral (5rem) y más espacio abajo (6rem) */
+  margin-top: 4rem;
+
+  box-sizing: border-box;
+
+  background-image: url('/assets/uploads/auth/form.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  border: none;
+  box-shadow: none;
+
+  position: relative;
+}
+
+/* Logos (reutiliza estilos de auth) */
+
+.auth-logo-icon {
+  display: block;
+  width: 130px;
+  height: auto;
+  margin: -4rem auto 0.2rem;
+}
+
+.auth-logo-text {
+  display: block;
+  width: 170px;
+  height: auto;
+  margin: -0.5rem auto 1.5rem;   /* más espacio debajo del logo */
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.perfil-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.5rem;            /* nuevo: separa el título de los logos */
+  margin-bottom: 1.5rem;
+}
+
+.perfil-header h1 {
+  margin: 0;
+
+  color: #b25c74;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  font-size: 1.9rem;
+  font-weight: 400;
+
+  letter-spacing: 0.02em;
+}
+
+/* =========================
+   AVISOS
+   ========================= */
+
+.perfil-aviso {
+  background: rgba(90, 179, 130, 0.13);
+  color: #2f9e5c;
+
+  border: 1px solid rgba(90, 179, 130, 0.3);
+  border-radius: 12px;
+
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.perfil-error {
+  background: rgba(218, 125, 145, 0.13);
+  color: #9d5264;
+
+  border: 1px solid rgba(218, 125, 145, 0.3);
+  border-radius: 12px;
+
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* =========================
+   DATOS (vista lectura)
+   ========================= */
+
+.perfil-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0 0 1.75rem;
+}
+
+.perfil-datos div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  border-bottom: 1px solid rgba(201, 138, 154, 0.25);
+  padding-bottom: 0.6rem;
+}
+
+.perfil-datos dt {
+  color: #a8836f;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.perfil-datos dd {
+  margin: 0;
+  color: #6b4c3a;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+/* =========================
+   CAMPOS (modo edición)
+   ========================= */
+
+.campo {
+  margin-bottom: 1.1rem;
+  margin-top: 0.2rem;
+}
+
+.campo-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.campo-icon {
+  position: absolute;
+  left: 1.1rem;
+
+  display: flex;
+  align-items: center;
+
+  width: 18px;
+  height: 18px;
+
+  color: #c98a9a;
+
+  pointer-events: none;
+}
+
+.campo input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1.5px solid rgba(201, 138, 154, 0.5);
+
+  background: rgba(255, 255, 255, 0.55);
+
+  color: #6b4c3a;
+
+  border-radius: 999px;
+
+  padding: 0.85rem 1rem 0.85rem 2.9rem;
+
+  font-size: 0.92rem;
+
+  font-family: inherit;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.campo input::placeholder {
+  color: #b8998e;
+}
+
+.campo input:focus {
+  border-color: #c96d82;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  box-shadow: 0 0 0 3px rgba(218, 125, 145, 0.15);
+}
+
+.campo-input-wrapper:focus-within .campo-icon {
+  color: #da7d91;
+}
+
+.campo-error {
+  display: block;
+
+  color: #a65366;
+
+  font-size: 0.76rem;
+
+  margin: 0.35rem 0 0 1.1rem;
+}
+
+/* =========================
+   ACCIONES / BOTONES
+   ========================= */
+
+.perfil-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.boton-primario {
+  border: none;
+
+  background: linear-gradient(135deg, #c96d82, #b0546b);
+
+  color: #fff;
+
+  border-radius: 999px;
+
+  padding: 0.8rem 1.6rem;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(176, 84, 107, 0.35);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.boton-primario:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(176, 84, 107, 0.42);
+}
+
+.boton-primario:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.boton-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.boton-sparkle {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+.boton-secundario {
+  border: 1.5px solid rgba(201, 138, 154, 0.5);
+
+  background: transparent;
+
+  color: #b0546b;
+
+  border-radius: 999px;
+
+  padding: 0.8rem 1.4rem;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.boton-secundario:hover {
+  background: rgba(218, 125, 145, 0.08);
+  border-color: #c96d82;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 600px) {
+
+  .perfil-page {
+    padding: 1rem;
+  }
+
+  .perfil-card {
+    max-width: 380px;
+    padding: 7rem 2.4rem 3.5rem;   /* proporcional pero más chico en móvil */
+    margin-top: 2rem;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .perfil-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .perfil-acciones {
+    flex-direction: column-reverse;
+  }
+}

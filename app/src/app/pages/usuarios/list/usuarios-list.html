@@ -1,0 +1,357 @@
+<section class="usuarios-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+
+    <!-- Hero -->
+    <header class="page-hero">
+
+      <div class="hero-content">
+
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Gestión de usuarios</h1>
+
+        <p>
+          Administra los usuarios registrados en Serena, consulta su
+          información y controla su acceso a la plataforma.
+        </p>
+
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>groups</mat-icon>
+      </div>
+
+    </header>
+
+    <!-- Card principal -->
+    <mat-card class="page-card">
+
+      <mat-card-content>
+
+        <!-- Encabezado -->
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-label">
+              Administración
+            </span>
+
+            <h2>Usuarios registrados</h2>
+
+            <p>
+              Busca usuarios, filtra por rol y cambia su estado cuando sea
+              necesario.
+            </p>
+
+          </div>
+
+          <div class="total-badge">
+
+            <mat-icon>group</mat-icon>
+
+            <span>
+              {{ usuariosFiltrados().length }}
+              usuarios
+            </span>
+
+          </div>
+
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+
+          <mat-form-field
+            appearance="outline"
+            class="search-field"
+          >
+
+            <mat-label>
+              Buscar usuario
+            </mat-label>
+
+            <input
+              matInput
+              placeholder="Nombre o correo electrónico"
+              [value]="terminoBusqueda()"
+              (input)="actualizarBusqueda($any($event.target).value)"
+            />
+
+            <mat-icon matSuffix>
+              search
+            </mat-icon>
+
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              Filtrar por rol
+            </mat-label>
+
+            <mat-select
+              [value]="rolSeleccionado()"
+              (selectionChange)="actualizarRol($event.value)"
+            >
+
+              <mat-option value="">
+                Todos los roles
+              </mat-option>
+
+              @for (rol of roles(); track rol) {
+
+                <mat-option [value]="rol">
+                  {{ rol }}
+                </mat-option>
+
+              }
+
+            </mat-select>
+
+          </mat-form-field>
+
+        </div>
+
+        <!-- Estados -->
+        @if (cargando()) {
+
+          <div class="state-container">
+
+            <div class="state-icon loading-icon">
+              <mat-icon>hourglass_top</mat-icon>
+            </div>
+
+            <h3>Cargando usuarios</h3>
+
+            <p>
+              Estamos obteniendo la información de los usuarios registrados.
+            </p>
+
+          </div>
+
+        } @else if (error()) {
+
+          <div class="state-container">
+
+            <div class="state-icon">
+              <mat-icon>error_outline</mat-icon>
+            </div>
+
+            <h3>Ocurrió un problema</h3>
+
+            <p>{{ error() }}</p>
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="recargar()"
+            >
+              Reintentar
+            </button>
+
+          </div>
+
+        } @else if (usuariosFiltrados().length === 0) {
+
+          <div class="state-container">
+
+            <div class="state-icon">
+              <mat-icon>search_off</mat-icon>
+            </div>
+
+            <h3>No encontramos usuarios</h3>
+
+            <p>
+              Intenta cambiar el texto de búsqueda o seleccionar otro rol.
+            </p>
+
+          </div>
+
+        } @else {
+
+          <!-- Tabla -->
+          <div class="table-container">
+
+            <table
+              mat-table
+              [dataSource]="usuariosFiltrados()"
+              class="usuarios-table"
+            >
+
+              <!-- Usuario -->
+
+              <ng-container matColumnDef="usuario">
+
+                <th mat-header-cell *matHeaderCellDef>
+                  Usuario
+                </th>
+
+                <td mat-cell *matCellDef="let usuario">
+
+                  <div class="name-cell">
+
+                    <div class="user-icon">
+                      <mat-icon>person</mat-icon>
+                    </div>
+
+                    <div class="user-info">
+
+                      <strong>
+                        {{ nombreCompleto(usuario) }}
+                      </strong>
+
+                      <small>
+                        {{ usuario.correo }}
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+              </ng-container>
+
+              <!-- Rol -->
+
+              <ng-container matColumnDef="rol">
+
+                <th mat-header-cell *matHeaderCellDef>
+                  Rol
+                </th>
+
+                <td mat-cell *matCellDef="let usuario">
+
+                  <span class="role-badge">
+                    {{ usuario.rol.nombre }}
+                  </span>
+
+                </td>
+
+              </ng-container>
+
+              <!-- Estado -->
+
+              <ng-container matColumnDef="estado">
+
+                <th mat-header-cell *matHeaderCellDef>
+                  Estado
+                </th>
+
+                <td mat-cell *matCellDef="let usuario">
+
+                  <span
+                    class="status-badge"
+                    [class.status-active]="usuario.estadoUsuario.nombre === 'Activo'"
+                    [class.status-inactive]="usuario.estadoUsuario.nombre !== 'Activo'"
+                  >
+
+                    <span class="status-dot"></span>
+
+                    {{ usuario.estadoUsuario.nombre }}
+
+                  </span>
+
+                </td>
+
+              </ng-container>
+
+              <!-- Fecha -->
+
+              <ng-container matColumnDef="fecha">
+
+                <th mat-header-cell *matHeaderCellDef>
+                  Registro
+                </th>
+
+                <td mat-cell *matCellDef="let usuario">
+
+                  {{ formatearFecha(usuario.fechaRegistro) }}
+
+                </td>
+
+              </ng-container>
+
+              <!-- Acciones -->
+
+              <ng-container matColumnDef="acciones">
+
+                <th mat-header-cell *matHeaderCellDef>
+                  Acciones
+                </th>
+
+                <td mat-cell *matCellDef="let usuario">
+
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    class="status-button"
+                    [class.deactivate-button]="usuario.estadoUsuario.nombre === 'Activo'"
+                    [class.activate-button]="usuario.estadoUsuario.nombre !== 'Activo'"
+                    [disabled]="estaActualizando(usuario)"
+                    [title]="
+                      'Cambiar a ' +
+                      (usuario.estadoUsuario.nombre === 'Activo'
+                        ? 'inactivo'
+                        : 'activo')
+                    "
+                    (click)="alternarEstado(usuario)"
+                  >
+
+                    <mat-icon>
+
+                      {{
+                        usuario.estadoUsuario.nombre === 'Activo'
+                          ? 'toggle_off'
+                          : 'toggle_on'
+                      }}
+
+                    </mat-icon>
+
+                    {{
+
+                      estaActualizando(usuario)
+                        ? 'Actualizando...'
+                        : usuario.estadoUsuario.nombre === 'Activo'
+                          ? 'Desactivar'
+                          : 'Activar'
+
+                    }}
+
+                  </button>
+
+                </td>
+
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="columnas"
+              ></tr>
+
+              <tr
+                mat-row
+                *matRowDef="let row; columns: columnas"
+              ></tr>
+
+            </table>
+
+          </div>
+
+        }
+
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+</section>

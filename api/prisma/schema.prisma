@@ -1,0 +1,531 @@
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../generated/prisma"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ======================================================
+// ROLES Y USUARIOS
+// ======================================================
+
+model Rol {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(255)
+  estado      Boolean @default(true)
+
+  usuarios Usuario[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rol")
+}
+
+model EstadoUsuario {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(255)
+
+  usuarios Usuario[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("estado_usuario")
+}
+
+model Usuario {
+  id            Int      @id @default(autoincrement())
+  nombre        String   @db.VarChar(100)
+  apellidos     String   @db.VarChar(150)
+  correo        String   @unique @db.VarChar(150)
+  password      String   @db.VarChar(255)
+  telefono      String?  @db.VarChar(30)
+  edad          Int?
+  fechaRegistro DateTime @default(now())
+
+  rolId           Int
+  estadoUsuarioId Int
+
+  rol           Rol           @relation(fields: [rolId], references: [id])
+  estadoUsuario EstadoUsuario @relation(fields: [estadoUsuarioId], references: [id])
+
+  perfilProfesional      PerfilProfesional?
+  citasCliente           Cita[]                 @relation("ClienteCitas")
+  resenasCliente         Resena[]
+  bitacoras              Bitacora[]
+  cambiosEstadoCita      HistorialEstadoCita[]
+  notificaciones         Notificacion[]
+  solicitudesProfesional SolicitudProfesional[] @relation("SolicitudProfesionalUsuario")
+  solicitudesResueltas   SolicitudProfesional[] @relation("SolicitudProfesionalResueltoPor")
+  asistenciasRegistradas AsistenciaCita[]       @relation("AsistenciasRegistradas")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("usuario")
+}
+
+// ======================================================
+// UBICACIÓN
+// ======================================================
+
+model Ubicacion {
+  id        Int    @id @default(autoincrement())
+  provincia String @db.VarChar(100)
+  canton    String @db.VarChar(100)
+  distrito  String @db.VarChar(100)
+
+  perfiles               PerfilProfesional[]
+  solicitudesProfesional SolicitudProfesional[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ubicacion")
+}
+
+// ======================================================
+// PERFIL PROFESIONAL
+// ======================================================
+
+model PerfilProfesional {
+  id                Int     @id @default(autoincrement())
+  usuarioId         Int     @unique
+  ubicacionId       Int
+  tituloProfesional String  @db.VarChar(150)
+  descripcion       String  @db.Text
+  aniosExperiencia  Int
+  tarifaBase        Decimal @db.Decimal(10, 2)
+  imagenPerfil      String? @db.VarChar(255)
+  disponible        Boolean @default(true)
+
+  usuario   Usuario   @relation(fields: [usuarioId], references: [id])
+  ubicacion Ubicacion @relation(fields: [ubicacionId], references: [id])
+
+  servicios      Servicio[]
+  especialidades ProfesionalEspecialidad[]
+  citas          Cita[]
+  resenas        Resena[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("perfil_profesional")
+}
+
+// ======================================================
+// ESTADOS DE SERVICIO
+// ======================================================
+
+model EstadoServicio {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(255)
+
+  servicios Servicio[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("estado_servicio")
+}
+
+// ======================================================
+// MODALIDAD
+// ======================================================
+
+model Modalidad {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(255)
+
+  servicios Servicio[]
+  citas     Cita[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("modalidad")
+}
+
+// ======================================================
+// TIPOS DE ESPECIALIDAD
+// ======================================================
+
+model EstadoTipoEspecialidad {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(255)
+
+  tiposEspecialidad TipoEspecialidad[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("estado_tipo_especialidad")
+}
+
+model TipoEspecialidad {
+  id                       Int     @id @default(autoincrement())
+  nombre                   String  @unique @db.VarChar(100)
+  descripcion              String? @db.VarChar(255)
+  estadoTipoEspecialidadId Int
+
+  estadoTipoEspecialidad EstadoTipoEspecialidad @relation(fields: [estadoTipoEspecialidadId], references: [id])
+
+  especialidades Especialidad[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tipo_especialidad")
+}
+
+// ======================================================
+// ESPECIALIDADES
+// ======================================================
+
+model EstadoEspecialidad {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(255)
+
+  especialidades Especialidad[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("estado_especialidad")
+}
+
+model Especialidad {
+  id                   Int     @id @default(autoincrement())
+  tipoEspecialidadId   Int
+  estadoEspecialidadId Int
+  nombre               String  @unique @db.VarChar(120)
+  descripcion          String? @db.VarChar(255)
+
+  tipoEspecialidad   TipoEspecialidad   @relation(fields: [tipoEspecialidadId], references: [id])
+  estadoEspecialidad EstadoEspecialidad @relation(fields: [estadoEspecialidadId], references: [id])
+
+  profesionales ProfesionalEspecialidad[]
+  servicios     ServicioEspecialidad[]
+  solicitudes   SolicitudProfesionalEspecialidad[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("especialidad")
+}
+
+// ======================================================
+// PROFESIONAL - ESPECIALIDAD
+// ======================================================
+
+model ProfesionalEspecialidad {
+  perfilProfesionalId Int
+  especialidadId      Int
+
+  perfilProfesional PerfilProfesional @relation(fields: [perfilProfesionalId], references: [id], onDelete: Cascade)
+  especialidad      Especialidad      @relation(fields: [especialidadId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([perfilProfesionalId, especialidadId])
+  @@map("profesional_especialidad")
+}
+
+// ======================================================
+// SERVICIOS
+// ======================================================
+
+model Servicio {
+  id                  Int     @id @default(autoincrement())
+  perfilProfesionalId Int
+  modalidadId         Int
+  estadoServicioId    Int
+  nombre              String  @db.VarChar(150)
+  descripcion         String  @db.Text
+  precio              Decimal @db.Decimal(10, 2)
+  duracionEstimada    Int
+  imagenServicio      String? @db.VarChar(255)
+
+  perfilProfesional PerfilProfesional @relation(fields: [perfilProfesionalId], references: [id])
+  modalidad         Modalidad         @relation(fields: [modalidadId], references: [id])
+  estadoServicio    EstadoServicio    @relation(fields: [estadoServicioId], references: [id])
+
+  especialidades ServicioEspecialidad[]
+  citas          Cita[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("servicio")
+}
+
+// ======================================================
+// SERVICIO - ESPECIALIDAD
+// ======================================================
+
+model ServicioEspecialidad {
+  servicioId     Int
+  especialidadId Int
+
+  servicio     Servicio     @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+  especialidad Especialidad @relation(fields: [especialidadId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([servicioId, especialidadId])
+  @@map("servicio_especialidad")
+}
+
+// ======================================================
+// CITAS
+// ======================================================
+
+model EstadoCita {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(255)
+
+  citas               Cita[]
+  historialesOrigen   HistorialEstadoCita[] @relation("EstadoAnteriorCita")
+  historialesDestino  HistorialEstadoCita[] @relation("EstadoNuevoCita")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("estado_cita")
+}
+
+model Cita {
+  id                    Int      @id @default(autoincrement())
+  clienteId             Int
+  servicioId            Int
+  profesionalId         Int
+  estadoCitaId          Int
+  modalidadId           Int
+  fechaCita             DateTime
+  horaInicio            DateTime
+  horaFin               DateTime
+  comentarioCliente     String?  @db.Text
+  comentarioProfesional String?  @db.Text
+  montoEstimado         Decimal  @db.Decimal(10, 2)
+
+  cliente     Usuario           @relation("ClienteCitas", fields: [clienteId], references: [id])
+  servicio    Servicio          @relation(fields: [servicioId], references: [id])
+  profesional PerfilProfesional @relation(fields: [profesionalId], references: [id])
+  estadoCita  EstadoCita        @relation(fields: [estadoCitaId], references: [id])
+  modalidad   Modalidad         @relation(fields: [modalidadId], references: [id])
+
+  resena           Resena?
+  historialEstados HistorialEstadoCita[]
+  asistencia       AsistenciaCita?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cita")
+}
+
+model HistorialEstadoCita {
+  id               Int      @id @default(autoincrement())
+  citaId           Int
+  estadoAnteriorId Int?
+  estadoNuevoId    Int
+  usuarioId        Int
+  comentario       String?  @db.Text
+  fechaCambio      DateTime @default(now())
+
+  cita           Cita        @relation(fields: [citaId], references: [id], onDelete: Cascade)
+  estadoAnterior EstadoCita? @relation("EstadoAnteriorCita", fields: [estadoAnteriorId], references: [id])
+  estadoNuevo    EstadoCita  @relation("EstadoNuevoCita", fields: [estadoNuevoId], references: [id])
+  usuario        Usuario     @relation(fields: [usuarioId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([citaId, fechaCambio])
+  @@map("historial_estado_cita")
+}
+
+// ======================================================
+// RESEÑAS
+// ======================================================
+
+model Resena {
+  id            Int      @id @default(autoincrement())
+  citaId        Int      @unique
+  clienteId     Int
+  profesionalId Int
+  puntuacion    Int
+  comentario    String?  @db.Text
+  fechaResena   DateTime @default(now())
+
+  cita        Cita              @relation(fields: [citaId], references: [id])
+  cliente     Usuario           @relation(fields: [clienteId], references: [id])
+  profesional PerfilProfesional @relation(fields: [profesionalId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("resena")
+}
+
+// ======================================================
+// BITÁCORA
+// ======================================================
+
+model Bitacora {
+  id          Int      @id @default(autoincrement())
+  usuarioId   Int
+  accion      String   @db.VarChar(150)
+  descripcion String?  @db.Text
+  fecha       DateTime @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("bitacora")
+}
+
+// ======================================================
+// ASISTENCIA
+// ======================================================
+
+enum EstadoAsistencia {
+  Asistio
+  NoAsistio
+  Tardanza
+  CanceladaUltimaHora
+}
+
+model AsistenciaCita {
+  id               Int              @id @default(autoincrement())
+  citaId           Int              @unique
+  estadoAsistencia EstadoAsistencia
+  registradoPorId  Int
+  horaLlegada      DateTime?
+  observaciones    String?          @db.Text
+
+  cita          Cita    @relation(fields: [citaId], references: [id])
+  registradoPor Usuario @relation("AsistenciasRegistradas", fields: [registradoPorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("asistencia_cita")
+}
+
+// ======================================================
+// NOTIFICACIONES
+// ======================================================
+
+enum TipoNotificacion {
+  CitaConfirmada
+  CitaCancelada
+  CitaReprogramada
+  RecordatorioCita
+  CitaProxima
+  NuevaSolicitudCita
+  CitaAceptada
+  NuevoMensaje
+  SolicitudValoracion
+  NuevaValoracion
+  AvisoImportante
+  AvisoAdministrativo
+  Bienvenida
+  PerfilDocumentacionPendiente
+  ReportePerfil
+  NuevoUsuarioRegistrado
+  NuevoProfesionalRegistrado
+  ProfesionalPendienteAprobacion
+  DocumentacionPendienteRevision
+  ProfesionalReportado
+  UsuarioReportado
+  NuevoReporte
+  AvisoSistema
+  ProblemaSistema
+}
+
+model Notificacion {
+  id        Int              @id @default(autoincrement())
+  usuarioId Int
+  tipo      TipoNotificacion
+  titulo    String           @db.VarChar(150)
+  mensaje   String           @db.Text
+  data      Json?
+  leida     Boolean          @default(false)
+  leidaEn   DateTime?
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notificacion")
+}
+
+// ======================================================
+// SOLICITUDES DE PROFESIONAL
+// ======================================================
+
+enum EstadoSolicitudProfesional {
+  Pendiente
+  Aprobada
+  Rechazada
+}
+
+model SolicitudProfesional {
+  id                       Int     @id @default(autoincrement())
+  usuarioId                Int
+  ubicacionId              Int
+  tituloProfesional        String  @db.VarChar(150)
+  descripcion              String  @db.Text
+  aniosExperiencia         Int
+  tarifaBase               Decimal @db.Decimal(10, 2)
+  credencialArchivo        String  @db.VarChar(255)
+  credencialNombreOriginal String  @db.VarChar(255)
+
+  estado          EstadoSolicitudProfesional @default(Pendiente)
+  fechaSolicitud  DateTime                   @default(now())
+  fechaResolucion DateTime?
+  resueltoPorId   Int?
+  motivoRechazo   String?                    @db.Text
+
+  usuario     Usuario   @relation("SolicitudProfesionalUsuario", fields: [usuarioId], references: [id])
+  ubicacion   Ubicacion @relation(fields: [ubicacionId], references: [id])
+  resueltoPor Usuario?  @relation("SolicitudProfesionalResueltoPor", fields: [resueltoPorId], references: [id])
+
+  especialidades SolicitudProfesionalEspecialidad[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("solicitud_profesional")
+}
+
+model SolicitudProfesionalEspecialidad {
+  solicitudProfesionalId Int
+  especialidadId         Int
+
+  solicitudProfesional SolicitudProfesional @relation(fields: [solicitudProfesionalId], references: [id], onDelete: Cascade)
+  especialidad         Especialidad         @relation(fields: [especialidadId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([solicitudProfesionalId, especialidadId])
+  @@map("solicitud_profesional_especialidad")
+}

@@ -1,0 +1,86 @@
+<section class="paciente-dashboard">
+
+  <div class="top-row">
+    <article class="chart-card white">
+      <header>
+        <span class="section-label">ESTADO</span>
+        <h3>Estado de sus citas</h3>
+      </header>
+      <div class="chart-box"><canvas #estadoCanvas></canvas></div>
+    </article>
+
+    <article class="chart-card white">
+      <header>
+        <span class="section-label">RESUMEN</span>
+        <h3>Resumen de atención profesional</h3>
+      </header>
+      <div class="chart-box"><canvas #resumenCanvas></canvas></div>
+    </article>
+  </div>
+
+  <div class="history-layout">
+    <div class="history-list-card">
+      <header class="card-header">
+        <div>
+          <span class="section-label">HISTORIAL</span>
+          <h2>Mis citas</h2>
+        </div>
+      </header>
+
+      <div class="history-list">
+        <div
+          class="history-row"
+          *ngFor="let cita of citasOrdenadas()"
+          [class.active]="citaSeleccionada === cita"
+          (click)="seleccionarCita(cita)"
+        >
+          <div class="history-date">
+            <strong>{{ cita.fechaCita | date: 'dd MMM' }}</strong>
+            <span>{{ cita.horaInicio | date: 'HH:mm' }}</span>
+          </div>
+
+          <div class="history-main">
+            <strong>{{ cita.servicio.nombre }}</strong>
+            <span>{{ nombreProfesional(cita) }}</span>
+          </div>
+
+          <span class="status-pill" [attr.data-estado]="estadoNombre(cita)">
+            {{ estadoNombre(cita) }}
+          </span>
+        </div>
+
+        <div class="empty-state" *ngIf="!citas.length">
+          Aún no tienes citas registradas.
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-card" *ngIf="citaSeleccionada as cita">
+      <header class="card-header">
+        <div>
+          <span class="section-label">PACIENTE</span>
+          <h2>Detalle de la cita</h2>
+        </div>
+        <span class="status-pill" [attr.data-estado]="estadoNombre(cita)">
+          {{ estadoNombre(cita) }}
+        </span>
+      </header>
+
+      <div class="detail-body">
+        <div class="detail-block">
+          <span class="section-label">INFORMACIÓN DE LA CITA</span>
+          <p><strong>Servicio:</strong> {{ cita.servicio.nombre }}</p>
+          <p><strong>Fecha:</strong> {{ cita.fechaCita | date: 'dd/MM/yyyy' }}</p>
+          <p><strong>Hora:</strong> {{ cita.horaInicio | date: 'HH:mm' }} - {{ cita.horaFin | date: 'HH:mm' }}</p>
+          <p><strong>Profesional:</strong> {{ nombreProfesional(cita) }}</p>
+        </div>
+
+        <div class="detail-block">
+          <span class="section-label">RESEÑA DEL DOCTOR</span>
+          <p class="resena">{{ resenaDoc(cita) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

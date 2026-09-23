@@ -1,0 +1,282 @@
+<section class="servicios-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+
+    <!-- Hero -->
+
+    @if (cargando()) {
+
+      <div class="state-container">
+
+        <div class="state-icon loading-icon">
+          <mat-icon>hourglass_top</mat-icon>
+        </div>
+
+        <h3>Cargando servicio</h3>
+
+        <p>Estamos obteniendo la información del servicio.</p>
+
+      </div>
+
+    } @else if (error()) {
+
+      <div class="state-container">
+
+        <div class="state-icon">
+          <mat-icon>error_outline</mat-icon>
+        </div>
+
+        <h3>Ocurrió un problema</h3>
+
+        <p>{{ error() }}</p>
+
+      </div>
+
+    } @else if (servicio(); as s) {
+
+      <header class="page-hero">
+
+        <div class="hero-content">
+
+          <span class="hero-label">
+            <mat-icon>spa</mat-icon>
+            Serena
+          </span>
+
+          <h1>{{ s.nombre }}</h1>
+
+          <p>
+            Consulta toda la información del servicio registrado en la plataforma.
+          </p>
+
+          <div class="hero-status">
+
+            <span
+              class="status-badge"
+              [class.status-active]="s.estadoServicio.nombre === 'Activo'"
+              [class.status-inactive]="s.estadoServicio.nombre !== 'Activo'"
+            >
+
+              <span class="status-dot"></span>
+
+              {{ s.estadoServicio.nombre }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="hero-icon">
+          <mat-icon>medical_services</mat-icon>
+        </div>
+
+      </header>
+
+      <mat-card class="page-card">
+
+        <mat-card-content>
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="section-label">
+                Administración
+              </span>
+
+              <h2>Detalle del servicio</h2>
+
+              <p>
+                Consulta la información registrada del servicio.
+              </p>
+
+            </div>
+
+            <div class="section-actions">
+
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="volver()"
+              >
+
+                <mat-icon>arrow_back</mat-icon>
+
+                Volver
+
+              </button>
+
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                class="new-button"
+                (click)="irAEditar()"
+              >
+
+                <mat-icon>edit</mat-icon>
+
+                Editar servicio
+
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="detalle-grid">
+
+            <!-- Información -->
+
+            <mat-card class="detalle-card">
+
+              <mat-card-content>
+
+                <h3>Información general</h3>
+
+                <p class="descripcion">
+
+                  {{ s.descripcion }}
+
+                </p>
+
+                <div class="detalle-item">
+
+                  <span>Precio</span>
+
+                  <strong>{{ formatearPrecio(s.precio) }}</strong>
+
+                </div>
+
+                <div class="detalle-item">
+
+                  <span>Duración estimada</span>
+
+                  <strong>{{ s.duracionEstimada }} min</strong>
+
+                </div>
+
+                <div class="detalle-item">
+
+                  <span>Modalidad</span>
+
+                  <strong>{{ s.modalidad.nombre }}</strong>
+
+                </div>
+
+              </mat-card-content>
+
+            </mat-card>
+
+            <!-- Profesional -->
+
+            <mat-card class="detalle-card">
+
+              <mat-card-content>
+
+                <h3>Profesional</h3>
+
+                <p>
+
+                  {{ nombreProfesional(s) }}
+
+                </p>
+
+                <p class="detalle-secundario">
+
+                  {{ s.perfilProfesional.tituloProfesional }}
+
+                </p>
+
+                <p class="detalle-secundario">
+
+                  {{ s.perfilProfesional.usuario.correo }}
+
+                </p>
+
+              </mat-card-content>
+
+            </mat-card>
+
+                        <!-- Categoría -->
+
+            <mat-card class="detalle-card">
+
+              <mat-card-content>
+
+                <h3>Categoría</h3>
+
+                @if (categorias(s).length === 0) {
+
+                  <p class="detalle-secundario">
+                    Sin categoría (no tiene especialidades asociadas).
+                  </p>
+
+                } @else {
+
+                  <div class="chips-container">
+
+                    @for (categoria of categorias(s); track categoria) {
+
+                      <span class="role-badge">
+                        {{ categoria }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                }
+
+              </mat-card-content>
+
+            </mat-card>
+
+            <!-- Especialidades -->
+
+            <mat-card class="detalle-card">
+
+              <mat-card-content>
+
+                <h3>Especialidades</h3>
+
+                @if (s.especialidades.length === 0) {
+
+                  <p class="detalle-secundario">
+                    Este servicio no tiene especialidades asociadas.
+                  </p>
+
+                } @else {
+
+                  <div class="chips-container">
+
+                    @for (especialidad of s.especialidades; track especialidad.id) {
+
+                      <span class="role-badge">
+                        {{ especialidad.nombre }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                }
+
+              </mat-card-content>
+
+            </mat-card>
+
+          </div>
+
+        </mat-card-content>
+
+      </mat-card>
+
+    }
+
+  </div>
+
+</section>

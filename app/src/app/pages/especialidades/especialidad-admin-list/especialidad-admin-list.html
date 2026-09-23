@@ -1,0 +1,205 @@
+<section class="especialidades-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Gestión de especialidades</h1>
+
+        <p>
+          Administra las áreas profesionales disponibles para brindar una
+          atención integral, cercana y especializada.
+        </p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>health_and_safety</mat-icon>
+      </div>
+    </header>
+
+    <mat-card class="page-card">
+      <mat-card-content>
+        <div class="section-heading">
+          <div>
+            <span class="section-label">Administración</span>
+            <h2>Especialidades registradas</h2>
+            <p>
+              Busca, filtra y cambia el estado de las especialidades de Serena.
+            </p>
+          </div>
+
+          <div class="heading-actions">
+            <div class="total-badge">
+              <mat-icon>medical_services</mat-icon>
+              <span>{{ especialidadesFiltradas().length }} especialidades</span>
+            </div>
+            <button mat-flat-button type="button" class="create-button" (click)="abrirFormulario('crear')">
+              <mat-icon>add</mat-icon>Nueva especialidad
+            </button>
+          </div>
+        </div>
+
+        <div class="filters">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Buscar especialidad</mat-label>
+
+            <input
+              matInput
+              [(ngModel)]="busqueda"
+              placeholder="Ejemplo: Ginecología"
+            />
+
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Filtrar por estado</mat-label>
+
+            <mat-select [(ngModel)]="filtroEstado">
+              <mat-option value="">Todas</mat-option>
+              <mat-option value="Activa">Activas</mat-option>
+              <mat-option value="Inactiva">Inactivas</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        @if (cargando()) {
+          <div class="state-container">
+            <div class="state-icon loading-icon">
+              <mat-icon>spa</mat-icon>
+            </div>
+
+            <h3>Cargando especialidades</h3>
+            <p>Estamos preparando la información para ti.</p>
+          </div>
+        } @else if (especialidadesFiltradas().length === 0) {
+          <div class="state-container">
+            <div class="state-icon">
+              <mat-icon>search_off</mat-icon>
+            </div>
+
+            <h3>No encontramos especialidades</h3>
+            <p>
+              Intenta cambiar el nombre de búsqueda o seleccionar otro estado.
+            </p>
+          </div>
+        } @else {
+          <div class="table-container">
+            <table
+              mat-table
+              [dataSource]="especialidadesFiltradas()"
+              class="especialidades-table"
+            >
+              <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef>
+                  Especialidad
+                </th>
+
+                <td mat-cell *matCellDef="let especialidad">
+                  <div class="name-cell">
+                    <div class="specialty-icon">
+                      <mat-icon>health_and_safety</mat-icon>
+                    </div>
+
+                    <div class="specialty-info">
+                      <strong>{{ especialidad.nombre }}</strong>
+
+                      @if (especialidad.descripcion) {
+                        <small>
+                          {{ especialidad.descripcion }}
+                        </small>
+                      } @else {
+                        <small>Sin descripción registrada</small>
+                      }
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>
+                  Estado
+                </th>
+
+                <td mat-cell *matCellDef="let especialidad">
+                  <span
+                    class="status-badge"
+                    [class.status-active]="
+                      especialidad.estadoEspecialidad.nombre === 'Activa'
+                    "
+                    [class.status-inactive]="
+                      especialidad.estadoEspecialidad.nombre === 'Inactiva'
+                    "
+                  >
+                    <span class="status-dot"></span>
+
+                    {{ especialidad.estadoEspecialidad.nombre }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>
+                  Acciones
+                </th>
+
+                <td mat-cell *matCellDef="let especialidad">
+                  <div class="row-actions">
+                  <button mat-icon-button type="button" matTooltip="Ver detalle" aria-label="Ver detalle" (click)="abrirFormulario('detalle', especialidad)">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" matTooltip="Editar" aria-label="Editar especialidad" (click)="abrirFormulario('editar', especialidad)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    class="status-button"
+                    [class.deactivate-button]="
+                      especialidad.estadoEspecialidad.nombre === 'Activa'
+                    "
+                    [class.activate-button]="
+                      especialidad.estadoEspecialidad.nombre === 'Inactiva'
+                    "
+                    (click)="cambiarEstado(especialidad)"
+                  >
+                    <mat-icon>
+                      {{
+                        especialidad.estadoEspecialidad.nombre === 'Activa'
+                          ? 'toggle_off'
+                          : 'toggle_on'
+                      }}
+                    </mat-icon>
+
+                    {{
+                      especialidad.estadoEspecialidad.nombre === 'Activa'
+                        ? 'Desactivar'
+                        : 'Activar'
+                    }}
+                  </button>
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="columnas"
+              ></tr>
+
+              <tr
+                mat-row
+                *matRowDef="let row; columns: columnas"
+              ></tr>
+            </table>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>

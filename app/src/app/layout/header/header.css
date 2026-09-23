@@ -1,0 +1,241 @@
+.toolbar{
+
+    position:absolute;
+
+    top:28px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:92%;
+
+    max-width:1280px;
+
+    height:82px;
+
+    padding:0 24px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    background:rgba(255,255,255,.72);
+
+    backdrop-filter:blur(16px);
+
+    border-radius:999px;
+
+    box-shadow:var(--shadow-soft);
+
+    z-index:999;
+
+}
+
+/* Logo */
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    text-decoration:none;
+
+    flex-shrink:0;
+
+}
+
+.logo img{
+
+    height:12vh;
+
+    width:auto;
+
+}
+
+/* Navegación */
+
+.desktop-nav{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:38px;
+
+    margin-right:50px;
+
+}
+
+.desktop-nav a{
+
+    color:var(--color-brown);
+
+    font-family:"Glacial Indifference",sans-serif;
+
+    font-size:15px;
+
+    text-decoration:none;
+
+    transition:.25s;
+
+}
+
+.desktop-nav a:hover{
+
+    color:var(--color-secondary);
+
+}
+
+.active-link{
+
+    color:var(--color-secondary)!important;
+
+}
+
+/* Acciones */
+
+.actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+/* Botón menú */
+
+.menu-btn{
+
+    width:46px!important;
+
+    height:46px!important;
+
+    border-radius:50%!important;
+
+    color:var(--color-brown)!important;
+
+    transition:.25s;
+
+}
+
+.menu-btn:hover{
+
+    background:rgba(255,255,255,.55);
+
+}
+
+.menu-btn mat-icon{
+
+    font-size:25px;
+
+    width:25px;
+
+    height:25px;
+
+}
+
+/* ---------- MENÚ ---------- */
+
+.serena-menu{
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+}
+
+.serena-menu .mat-mdc-menu-content{
+
+    padding:10px;
+
+}
+
+.serena-menu .mat-mdc-menu-item{
+
+    min-height:48px;
+
+    border-radius:14px;
+
+    font-family:"Chau Philomene One",sans-serif!important;
+
+    font-size:17px;
+
+    color:var(--color-brown);
+
+    transition:.25s;
+
+}
+
+.serena-menu .mat-mdc-menu-item:hover{
+
+    background:#F9EDF0;
+
+    color:var(--color-secondary);
+
+}
+
+.serena-menu .mat-divider{
+
+    margin:8px 0;
+
+    border-top-color:#E9D9DD;
+
+}
+
+/* Hace que el menú quede un poco separado del botón */
+
+::ng-deep .cdk-overlay-pane{
+
+    margin-top:10px;
+
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    .toolbar{
+
+        width:95%;
+
+        height:74px;
+
+        padding:0 18px;
+
+    }
+
+    .desktop-nav{
+
+        display:none;
+
+    }
+
+    .logo img{
+
+        height:12vh;
+
+    }
+
+    .actions{
+
+        gap:8px;
+
+    }
+
+    .menu-btn{
+
+        width:42px!important;
+
+        height:42px!important;
+
+    }
+
+}

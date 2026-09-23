@@ -1,0 +1,241 @@
+.hero{
+
+    position:relative;
+
+    width:100%;
+
+    height:100vh;
+
+    min-height:900px;
+
+    overflow:hidden;
+}
+
+/* Imagen */
+
+.hero__background{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    object-position:center;
+
+    z-index:1;
+}
+
+/* Overlay */
+
+.hero__overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:linear-gradient(
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.18)
+    );
+
+    z-index:2;
+}
+
+/* Nube */
+
+.hero__cloud{
+
+    position:absolute;
+
+    left:50%;
+    top:52%;
+
+    transform:translate(-50%,-50%);
+
+    width:1100px;
+
+    max-width:95%;
+
+    opacity:.45;
+
+    z-index:3;
+
+    pointer-events:none;
+}
+
+/* Contenido */
+
+.hero__content{
+
+    position:absolute;
+
+    left:50%;
+    top:55%;
+
+    transform:translate(-50%,-50%);
+
+    width:720px;
+
+    max-width:90%;
+
+    text-align:center;
+
+    z-index:5;
+}
+
+/* Badge */
+
+.hero__badge{
+
+    display:inline-block;
+
+    padding:10px 22px;
+
+    background:#f1e6c8;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-family:"Glacial Indifference",sans-serif;
+
+    margin-bottom:28px;
+
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+}
+
+/* Título */
+
+.hero__title{
+
+    font-family:"CMU Serif",serif;
+
+    font-size:72px;
+
+    font-weight:400;
+
+    line-height:1.08;
+
+    color:var(--color-brown);
+
+    margin-bottom:26px;
+}
+
+/* Texto */
+
+.hero__description{
+
+    font-family:"Glacial Indifference",sans-serif;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+    max-width:640px;
+
+    margin:0 auto 40px;
+
+    color:var(--color-brown);
+}
+
+/* Botones */
+
+.hero__buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:18px;
+
+    flex-wrap:wrap;
+}
+
+.btn-primary{
+
+    background:var(--color-secondary)!important;
+
+    color:white!important;
+
+    border-radius:999px!important;
+
+    height:48px;
+
+    padding:0 28px!important;
+
+    font-family:"Chau Philomene One",sans-serif;
+}
+
+.btn-secondary{
+
+    border:2px solid var(--color-secondary)!important;
+
+    color:var(--color-brown)!important;
+
+    border-radius:999px!important;
+
+    height:48px;
+
+    padding:0 28px!important;
+
+    font-family:"Chau Philomene One",sans-serif;
+}
+
+/* Responsive */
+
+@media (max-width:900px){
+
+    .hero{
+
+        min-height:700px;
+    }
+
+    .hero__cloud{
+
+        width:700px;
+    }
+
+    .hero__title{
+
+        font-size:48px;
+    }
+
+    .hero__description{
+
+        font-size:16px;
+    }
+
+}
+
+@media (max-width:600px){
+
+    .hero{
+
+        min-height:620px;
+    }
+
+    .hero__title{
+
+        font-size:36px;
+    }
+
+    .hero__buttons{
+
+        flex-direction:column;
+
+        align-items:center;
+    }
+
+    .btn-primary,
+    .btn-secondary{
+
+        width:100%;
+        max-width:320px;
+    }
+
+}

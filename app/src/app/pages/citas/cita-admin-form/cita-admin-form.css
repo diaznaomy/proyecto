@@ -1,0 +1,327 @@
+:host {
+  display: block;
+}
+.cita-form-page {
+  min-height: 100vh;
+  padding: 3rem 1.5rem 5rem;
+  background: linear-gradient(135deg, rgba(241, 231, 200, 0.96), rgba(246, 255, 250, 0.92));
+  color: var(--color-brown);
+}
+.page-wrapper {
+  width: min(100%, 1050px);
+  margin: 0 auto;
+}
+.page-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2.6rem 3rem;
+  margin-bottom: 1.8rem;
+  border-radius: var(--radius-lg);
+  background: rgba(246, 255, 250, 0.92);
+  box-shadow: var(--shadow-soft);
+}
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-xl);
+  background: rgba(218, 125, 145, 0.15);
+  color: var(--color-secondary);
+  font-weight: 700;
+}
+.page-hero h1 {
+  margin: 1rem 0 0.7rem;
+  font:
+    500 clamp(2.2rem, 4vw, 3.5rem) Georgia,
+    serif;
+}
+.page-hero p {
+  max-width: 620px;
+  margin: 0;
+  color: rgba(81, 54, 29, 0.68);
+  line-height: 1.7;
+}
+.hero-icon {
+  display: grid;
+  place-items: center;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+}
+.hero-icon mat-icon {
+  width: 62px;
+  height: 62px;
+  color: white;
+  font-size: 62px;
+}
+.form-card {
+  border-radius: var(--radius-lg);
+  background: rgba(246, 255, 250, 0.96);
+  box-shadow: var(--shadow-soft);
+}
+.form-card mat-card-content {
+  padding: 2.5rem;
+}
+.pending-state,
+.appointment-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-md);
+  background: rgba(241, 193, 93, 0.16);
+}
+.pending-state div,
+.section-title div,
+.appointment-summary div {
+  display: grid;
+  gap: 0.2rem;
+}
+.pending-state span,
+.section-title p,
+.appointment-summary span {
+  color: rgba(81, 54, 29, 0.62);
+}
+.form-section {
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(81, 54, 29, 0.09);
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.3rem;
+}
+.section-title > span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  color: white;
+  font-weight: 800;
+}
+.section-title h2 {
+  margin: 0;
+  font:
+    500 1.65rem Georgia,
+    serif;
+}
+.section-title p {
+  margin: 0;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.full-width {
+  grid-column: 1/-1;
+}
+.readonly-field {
+  display: grid;
+  gap: 0.3rem;
+  align-content: center;
+  min-height: 56px;
+  padding: 0 1rem;
+  border: 1px solid rgba(81, 54, 29, 0.2);
+  border-radius: 4px;
+  background: rgba(241, 231, 200, 0.25);
+}
+.readonly-field span {
+  font-size: 0.8rem;
+  color: rgba(81, 54, 29, 0.62);
+}
+.service-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.service-summary article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.7rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(160, 187, 178, 0.14);
+}
+.service-summary mat-icon {
+  grid-row: 1/3;
+  align-self: center;
+  color: #527267;
+}
+.service-summary span {
+  font-size: 0.82rem;
+  color: rgba(81, 54, 29, 0.62);
+}
+.date-field {
+  width: min(100%, 360px);
+}
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+}
+.agenda-header > div:first-child {
+  display: grid;
+}
+.agenda-header span {
+  color: rgba(81, 54, 29, 0.62);
+}
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.82rem;
+}
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.legend i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.free {
+  background: #8eb8a9;
+}
+.busy {
+  background: #d8c9c4;
+}
+.selected {
+  background: var(--color-secondary);
+}
+.agenda-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+}
+.time-block {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(82, 114, 103, 0.25);
+  border-radius: var(--radius-sm);
+  background: #f4fbf7;
+  color: var(--color-brown);
+  cursor: pointer;
+  transition: 0.2s;
+}
+.time-block:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #527267;
+  box-shadow: 0 6px 14px rgba(82, 114, 103, 0.14);
+}
+.time-block span {
+  font-size: 0.78rem;
+  color: #527267;
+}
+.time-block.occupied {
+  border-color: transparent;
+  background: #eee8e5;
+  color: #9b8c87;
+  cursor: not-allowed;
+}
+.time-block.occupied span {
+  color: #9b8c87;
+}
+.time-block.past {
+  background: repeating-linear-gradient(
+    135deg,
+    #eee8e5,
+    #eee8e5 7px,
+    #e5ddda 7px,
+    #e5ddda 14px
+  );
+}
+.time-block.selected {
+  border-color: var(--color-secondary);
+  background: var(--color-secondary);
+  color: white;
+}
+.time-block.selected span {
+  color: white;
+}
+.agenda-state {
+  display: flex;
+  min-height: 130px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  border: 1px dashed rgba(81, 54, 29, 0.2);
+  border-radius: var(--radius-md);
+  color: rgba(81, 54, 29, 0.62);
+}
+.field-error,
+.error-hint {
+  color: #b3261e;
+}
+.appointment-summary {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  margin-bottom: 1.2rem;
+  background: rgba(160, 187, 178, 0.18);
+}
+.appointment-summary mat-icon {
+  color: #527267;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.4rem 2.5rem 2rem;
+}
+.form-actions button {
+  min-height: 48px;
+  border-radius: var(--radius-xl) !important;
+}
+.save-button {
+  background: var(--color-secondary) !important;
+  color: white !important;
+}
+@media (max-width: 750px) {
+  .cita-form-page {
+    padding: 1.3rem 0.8rem 3rem;
+  }
+  .page-hero {
+    padding: 1.6rem;
+  }
+  .hero-icon {
+    display: none;
+  }
+  .form-card mat-card-content {
+    padding: 1.3rem;
+  }
+  .form-grid,
+  .service-summary {
+    grid-template-columns: 1fr;
+  }
+  .full-width {
+    grid-column: auto;
+  }
+  .agenda-header {
+    flex-direction: column;
+  }
+  .agenda-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .appointment-summary {
+    grid-template-columns: auto 1fr;
+  }
+  .appointment-summary div:last-child {
+    grid-column: 2;
+  }
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+    padding: 1.2rem;
+  }
+}

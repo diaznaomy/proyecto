@@ -1,0 +1,64 @@
+<section class="admin-dashboard">
+
+  <!-- Actividad de la plataforma -->
+  <div class="kpi-grid">
+    <article class="kpi-card pink">
+      <span class="section-label">USUARIOS</span>
+      <strong>{{ usuariosRegistrados }}</strong>
+      <span class="kpi-caption">Usuarios registrados</span>
+    </article>
+
+    <article class="kpi-card mint">
+      <span class="section-label">PROFESIONALES</span>
+      <strong>{{ profesionalesActivos }}</strong>
+      <span class="kpi-caption">Profesionales activos</span>
+    </article>
+
+    <article class="kpi-card cream">
+      <span class="section-label">ESTE MES</span>
+      <strong>{{ citasEsteMes }}</strong>
+      <span class="kpi-caption">Citas este mes</span>
+    </article>
+
+    <article class="kpi-card white">
+      <span class="section-label">ESTE AÑO</span>
+      <strong>{{ citasEsteAnio }}</strong>
+      <span class="kpi-caption">Citas este año</span>
+    </article>
+
+    <article class="kpi-card dark">
+      <span class="section-label">COMPLETADAS</span>
+      <strong>{{ citasCompletadasTotal }}</strong>
+      <span class="kpi-caption">Citas totales completadas</span>
+    </article>
+  </div>
+
+  <!-- Estados + especialidades -->
+  <div class="chart-row">
+    <article class="chart-card white">
+      <header>
+        <span class="section-label">ESTADOS</span>
+        <h3>Citas por estado</h3>
+      </header>
+      <div class="chart-box"><canvas #estadosCanvas></canvas></div>
+    </article>
+
+    <article class="chart-card white">
+      <header>
+        <span class="section-label">DEMANDA</span>
+        <h3>Especialidades más solicitadas</h3>
+      </header>
+      <div class="chart-box"><canvas #especialidadesCanvas></canvas></div>
+    </article>
+  </div>
+
+  <!-- Línea de tiempo -->
+  <article class="chart-card wide">
+    <header>
+      <span class="section-label">TENDENCIA</span>
+      <h3>Citas a lo largo del tiempo</h3>
+    </header>
+    <div class="chart-box"><canvas #tiempoCanvas></canvas></div>
+  </article>
+
+</section>

@@ -1,0 +1,308 @@
+<section class="profesionales-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Profesionales</h1>
+
+        <p>
+          Conoce los perfiles de las personas profesionales que brindan acompañamiento y atención
+          dentro de Serena.
+        </p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>groups</mat-icon>
+      </div>
+    </header>
+
+    <mat-card class="page-card">
+      <mat-card-content>
+        <div class="section-heading">
+          <div>
+            <span class="section-label">
+              {{ esAdministrador() ? 'Administración' : 'Nuestro equipo' }}
+            </span>
+
+            <h2>Profesionales registrados</h2>
+
+            <p>Consulta su información, disponibilidad y tarifa base.</p>
+          </div>
+
+          <div class="heading-actions">
+            <div class="total-badge">
+              <mat-icon>person</mat-icon>
+
+              <span>
+                {{ profesionalesFiltrados().length }}
+                profesionales
+              </span>
+            </div>
+
+            @if (esAdministrador()) {
+              <button
+                mat-flat-button
+                type="button"
+                class="create-professional-button"
+                (click)="crearProfesional()"
+              >
+                <mat-icon>person_add</mat-icon>
+                Nuevo profesional
+              </button>
+
+              <button
+                mat-stroked-button
+                type="button"
+                class="create-professional-button"
+                (click)="verSolicitudesAdmin()"
+              >
+                <mat-icon>fact_check</mat-icon>
+                Ver solicitudes
+              </button>
+            } @else if (esCliente()) {
+              @if (tieneSolicitudPendiente()) {
+                <span class="status-badge status-unavailable">
+                  <span class="status-dot"></span>
+                  Tu solicitud está en revisión
+                </span>
+              } @else if (!cargandoMiSolicitud()) {
+                <button
+                  mat-flat-button
+                  type="button"
+                  class="create-professional-button"
+                  (click)="solicitarSerProfesional()"
+                >
+                  <mat-icon>workspace_premium</mat-icon>
+                  {{
+                    tieneSolicitudRechazada()
+                      ? 'Volver a solicitar ser profesional'
+                      : 'Solicitar ser profesional'
+                  }}
+                </button>
+              }
+            }
+          </div>
+        </div>
+
+        <div class="filters">
+          <mat-form-field appearance="outline">
+            <mat-label>Buscar por nombre</mat-label>
+
+            <input matInput [(ngModel)]="busqueda" placeholder="Ejemplo: Sofía Ramírez" />
+
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Modalidad</mat-label>
+
+            <mat-select [(ngModel)]="filtroModalidad">
+              <mat-option value=""> Todas </mat-option>
+
+              <mat-option value="Virtual"> Virtual </mat-option>
+
+              <mat-option value="Presencial"> Presencial </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Disponibilidad</mat-label>
+
+            <mat-select [(ngModel)]="filtroDisponibilidad">
+              <mat-option value=""> Todas </mat-option>
+
+              <mat-option value="disponible"> Disponibles </mat-option>
+
+              <mat-option value="no-disponible"> No disponibles </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          @if (esCliente()) {
+            <button
+              mat-stroked-button
+              type="button"
+              class="favorite-filter-button"
+              [class.active]="soloFavoritos()"
+              (click)="toggleSoloFavoritos()"
+            >
+              <mat-icon>{{ soloFavoritos() ? 'favorite' : 'favorite_border' }}</mat-icon>
+              <span>Mis Favoritos</span>
+              @if (totalFavoritos() > 0) {
+                <span class="fav-count">{{ totalFavoritos() }}</span>
+              }
+            </button>
+          }
+        </div>
+
+        @if (cargando()) {
+          <div class="state-container">
+            <div class="state-icon loading-icon">
+              <mat-icon>spa</mat-icon>
+            </div>
+
+            <h3>Cargando profesionales</h3>
+
+            <p>Estamos preparando la información para ti.</p>
+          </div>
+        } @else if (profesionalesFiltrados().length === 0) {
+          <div class="state-container">
+            <div class="state-icon">
+              <mat-icon>person_search</mat-icon>
+            </div>
+
+            <h3>No encontramos profesionales</h3>
+
+            <p>Intenta cambiar la búsqueda o el filtro seleccionado.</p>
+          </div>
+        } @else {
+          <div class="table-container">
+            <table mat-table [dataSource]="profesionalesFiltrados()" class="profesionales-table">
+              <ng-container matColumnDef="profesional">
+                <th mat-header-cell *matHeaderCellDef>Profesional</th>
+
+                <td mat-cell *matCellDef="let perfil">
+                  <div class="professional-cell">
+                    <img
+                      class="profile-image"
+                      [src]="obtenerImagenUrl(perfil)"
+                      [alt]="obtenerNombreCompleto(perfil)"
+                      (error)="usarImagenPredeterminada($event)"
+                    />
+
+                    <div class="professional-info">
+                      <strong>
+                        {{ obtenerNombreCompleto(perfil) }}
+                      </strong>
+
+                      <span>
+                        {{ perfil.tituloProfesional }}
+                      </span>
+
+                      <small>
+                        {{ perfil.usuario.correo }}
+                      </small>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="modalidad">
+                <th mat-header-cell *matHeaderCellDef>Modalidad</th>
+
+                <td mat-cell *matCellDef="let perfil">
+                  <span
+                    class="modality-badge"
+                    [class.modality-virtual]="esModalidadVirtual(perfil)"
+                    [class.modality-presencial]="!esModalidadVirtual(perfil)"
+                  >
+                    <mat-icon>
+                      {{ esModalidadVirtual(perfil) ? 'videocam' : 'location_on' }}
+                    </mat-icon>
+
+                    {{ obtenerModalidad(perfil) }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="tarifa">
+                <th mat-header-cell *matHeaderCellDef>Tarifa base</th>
+
+                <td mat-cell *matCellDef="let perfil">
+                  <span class="price">
+                    {{ perfil.tarifaBase | currency: 'CRC' : 'symbol-narrow' : '1.0-0' }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="disponibilidad">
+                <th mat-header-cell *matHeaderCellDef>Disponibilidad</th>
+
+                <td mat-cell *matCellDef="let perfil">
+                  <span
+                    class="status-badge"
+                    [class.status-available]="perfil.disponible"
+                    [class.status-unavailable]="!perfil.disponible"
+                  >
+                    <span class="status-dot"></span>
+
+                    {{ perfil.disponible ? 'Disponible' : 'No disponible' }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+
+                <td mat-cell *matCellDef="let perfil">
+                  <div class="actions">
+                    @if (esCliente()) {
+                      <button
+                        mat-icon-button
+                        type="button"
+                        class="favorite-action"
+                        [class.is-favorite]="esFavorito(perfil.id)"
+                        (click)="toggleFavorito(perfil, $event)"
+                      >
+                        <mat-icon>{{
+                          esFavorito(perfil.id) ? 'favorite' : 'favorite_border'
+                        }}</mat-icon>
+                      </button>
+                    }
+
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="view-action"
+                      aria-label="Ver profesional"
+                      (click)="verDetalle(perfil)"
+                    >
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+
+                    @if (esAdministrador()) {
+                      <button
+                        mat-icon-button
+                        type="button"
+                        class="edit-action"
+                        aria-label="Editar profesional"
+                        (click)="editarProfesional(perfil)"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        class="availability-button"
+                        [class.disable-button]="perfil.disponible"
+                        [class.enable-button]="!perfil.disponible"
+                        (click)="cambiarDisponibilidad(perfil)"
+                      >
+                        <mat-icon>
+                          {{ perfil.disponible ? 'toggle_off' : 'toggle_on' }}
+                        </mat-icon>
+
+                        {{ perfil.disponible ? 'Desactivar' : 'Activar' }}
+                      </button>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+
+              <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+            </table>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>

@@ -1,0 +1,405 @@
+<section class="servicios-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+
+    <!-- Hero -->
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>
+          {{ esEdicion() ? 'Editar servicio' : 'Nuevo servicio' }}
+        </h1>
+
+        <p>
+          {{
+            esEdicion()
+              ? 'Actualiza la información del servicio ofrecido por el profesional.'
+              : 'Registra un nuevo servicio dentro de la plataforma.'
+          }}
+        </p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>medical_services</mat-icon>
+      </div>
+    </header>
+
+    <!-- Card -->
+    <mat-card class="page-card">
+      <mat-card-content>
+
+        <!-- Encabezado -->
+        <div class="section-heading">
+          <div>
+            <span class="section-label">
+              Administración
+            </span>
+
+            <h2>
+              {{ esEdicion() ? 'Información del servicio' : 'Crear servicio' }}
+            </h2>
+
+            <p>
+              Completa la información del servicio ofrecido por el profesional.
+            </p>
+          </div>
+        </div>
+
+        <!-- Estados -->
+
+        @if (cargando()) {
+
+          <div class="state-container">
+
+            <div class="state-icon loading-icon">
+              <mat-icon>hourglass_top</mat-icon>
+            </div>
+
+            <h3>Cargando formulario</h3>
+
+            <p>
+              Estamos preparando la información del servicio.
+            </p>
+
+          </div>
+
+        } @else {
+
+          @if (error()) {
+
+            <div class="state-container">
+
+              <div class="state-icon">
+                <mat-icon>error_outline</mat-icon>
+              </div>
+
+              <h3>Ocurrió un problema</h3>
+
+              <p>{{ error() }}</p>
+
+            </div>
+
+          }
+
+          <form
+            class="servicio-form"
+            [formGroup]="formulario"
+            (ngSubmit)="guardar()"
+          >
+
+            <!-- Profesional (siempre el que inició sesión, no editable) -->
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Profesional asociado</mat-label>
+
+              <input
+                matInput
+                type="text"
+                [value]="
+                  miPerfil()
+                    ? miPerfil()!.usuario.nombre + ' ' + miPerfil()!.usuario.apellidos + ' — ' + miPerfil()!.tituloProfesional
+                    : 'Cargando perfil...'
+                "
+                disabled
+              />
+
+              <mat-icon matSuffix matTooltip="Este servicio siempre queda asociado a tu propio perfil profesional">
+                lock
+              </mat-icon>
+            </mat-form-field>
+
+            <!-- Campo oculto: se envía igual gracias a getRawValue(), pero nunca se elige desde la UI -->
+            <input type="hidden" formControlName="perfilProfesionalId" />
+
+            <!-- Nombre -->
+
+            <mat-form-field appearance="outline" class="full-width">
+
+              <mat-label>Nombre</mat-label>
+
+              <input
+                matInput
+                formControlName="nombre"
+                placeholder="Ej. Consulta de nutrición"
+              />
+
+              @if (formulario.controls.nombre.invalid &&
+              formulario.controls.nombre.touched) {
+
+                <mat-error>
+                  El nombre es obligatorio.
+                </mat-error>
+
+              }
+
+            </mat-form-field>
+
+            <!-- Descripción -->
+
+            <mat-form-field appearance="outline" class="full-width">
+
+              <mat-label>Descripción</mat-label>
+
+              <textarea
+                matInput
+                rows="4"
+                formControlName="descripcion"
+                placeholder="Describe en qué consiste el servicio">
+              </textarea>
+
+              @if (formulario.controls.descripcion.invalid &&
+              formulario.controls.descripcion.touched) {
+
+                <mat-error>
+                  La descripción es obligatoria.
+                </mat-error>
+
+              }
+
+            </mat-form-field>
+
+            <!-- Precio y duración -->
+
+            <div class="campo-grupo">
+
+              <mat-form-field appearance="outline">
+
+                <mat-label>Precio (₡)</mat-label>
+
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  formControlName="precio"
+                />
+
+                @if (formulario.controls.precio.invalid &&
+                formulario.controls.precio.touched) {
+
+                  <mat-error>
+                    El precio debe ser mayor a cero.
+                  </mat-error>
+
+                }
+
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+
+                <mat-label>Duración estimada (min)</mat-label>
+
+                <input
+                  matInput
+                  type="number"
+                  min="1"
+                  step="1"
+                  formControlName="duracionEstimada"
+                />
+
+                @if (formulario.controls.duracionEstimada.invalid &&
+                formulario.controls.duracionEstimada.touched) {
+
+                  <mat-error>
+                    La duración debe ser mayor a cero.
+                  </mat-error>
+
+                }
+
+              </mat-form-field>
+
+            </div>
+
+            <!-- Modalidad y Estado -->
+
+            <div class="campo-grupo">
+
+              <mat-form-field appearance="outline">
+
+                <mat-label>Modalidad</mat-label>
+
+                <mat-select formControlName="modalidadId">
+
+                  <mat-option value="">
+                    Selecciona una modalidad
+                  </mat-option>
+
+                  @for (modalidad of modalidades(); track modalidad.id) {
+
+                    <mat-option [value]="modalidad.id.toString()">
+                      {{ modalidad.nombre }}
+                    </mat-option>
+
+                  }
+
+                </mat-select>
+
+                @if (formulario.controls.modalidadId.invalid &&
+                formulario.controls.modalidadId.touched) {
+
+                  <mat-error>
+                    La modalidad es obligatoria.
+                  </mat-error>
+
+                }
+
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+
+                <mat-label>Estado</mat-label>
+
+                <mat-select formControlName="estadoServicioId">
+
+                  <mat-option value="">
+                    Selecciona un estado
+                  </mat-option>
+
+                  @for (estado of estados(); track estado.id) {
+
+                    <mat-option [value]="estado.id.toString()">
+                      {{ estado.nombre }}
+                    </mat-option>
+
+                  }
+
+                </mat-select>
+
+                @if (formulario.controls.estadoServicioId.invalid &&
+                formulario.controls.estadoServicioId.touched) {
+
+                  <mat-error>
+                    El estado es obligatorio.
+                  </mat-error>
+
+                }
+
+              </mat-form-field>
+
+            </div>
+
+            <!-- Imagen -->
+
+            <mat-form-field appearance="outline" class="full-width">
+
+              <mat-label>URL de imagen (opcional)</mat-label>
+
+              <input
+                matInput
+                formControlName="imagenServicio"
+                placeholder="https://..."
+              />
+
+            </mat-form-field>
+
+            <!-- Especialidades -->
+
+                        <!-- Especialidades -->
+
+            <div class="campo">
+
+              <label class="especialidades-label">
+                Especialidades asociadas *
+              </label>
+
+              <p class="campo-ayuda">
+                La categoría del servicio se deriva de las especialidades que
+                selecciones.
+              </p>
+
+              <div class="especialidades-grid">
+
+                @for (especialidad of especialidades(); track especialidad.id) {
+
+                  <mat-checkbox
+                    [checked]="estaSeleccionada(especialidad)"
+                    (change)="alternarEspecialidad(especialidad)"
+                  >
+                    {{ especialidad.nombre }}
+
+                    <span class="especialidad-tipo">
+                      ({{ especialidad.tipoEspecialidad.nombre }})
+                    </span>
+
+                  </mat-checkbox>
+
+                }
+
+              </div>
+
+              @if (categoriasDerivadas().length > 0) {
+
+                <p class="campo-ayuda">
+
+                  <strong>Categoría(s):</strong>
+
+                  {{ categoriasDerivadas().join(', ') }}
+
+                </p>
+
+              }
+
+              @if (errorEspecialidades()) {
+
+                <mat-error>
+                  {{ errorEspecialidades() }}
+                </mat-error>
+
+              }
+
+            </div>
+
+            <!-- Botones -->
+
+            <div class="servicio-form-acciones">
+
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="cancelar()"
+              >
+
+                <mat-icon>
+                  arrow_back
+                </mat-icon>
+
+                Cancelar
+
+              </button>
+
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="guardando()"
+              >
+
+                <mat-icon>
+                  save
+                </mat-icon>
+
+                {{
+                  guardando()
+                    ? 'Guardando...'
+                    : 'Guardar servicio'
+                }}
+
+              </button>
+
+            </div>
+
+          </form>
+
+        }
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</section>

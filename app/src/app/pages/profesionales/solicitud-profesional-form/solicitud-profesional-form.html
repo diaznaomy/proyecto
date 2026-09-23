@@ -1,0 +1,262 @@
+<section class="professional-form-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div class="hero-content">
+        <a routerLink="/profesionales" class="back-link">
+          <mat-icon>arrow_back</mat-icon>
+          Volver a profesionales
+        </a>
+
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Solicitar ser profesional</h1>
+
+        <p>
+          Completa tu información profesional y adjunta tus credenciales.
+          Un administrador revisará tu solicitud antes de aprobarla.
+        </p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>workspace_premium</mat-icon>
+      </div>
+    </header>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()">
+      <mat-card class="form-card">
+        <mat-card-content>
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon green-icon">
+                <mat-icon>school</mat-icon>
+              </div>
+
+              <div>
+                <span class="section-label">Información profesional</span>
+                <h2>Experiencia y presentación</h2>
+                <p>Estos datos se usarán para crear tu perfil si la solicitud es aprobada.</p>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Título profesional</mat-label>
+
+                <input
+                  matInput
+                  formControlName="tituloProfesional"
+                  placeholder="Ejemplo: Psicóloga clínica"
+                />
+
+                <mat-icon matSuffix>school</mat-icon>
+
+                @if (formulario.controls.tituloProfesional.hasError('required') && campoInvalido('tituloProfesional')) {
+                  <mat-error>El título profesional es obligatorio.</mat-error>
+                } @else if (formulario.controls.tituloProfesional.hasError('minlength') && campoInvalido('tituloProfesional')) {
+                  <mat-error>Debe tener al menos 3 caracteres.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Descripción / presentación profesional</mat-label>
+
+                <textarea
+                  matInput
+                  formControlName="descripcion"
+                  rows="5"
+                  placeholder="Cuéntanos sobre tu experiencia, enfoque y servicios"
+                ></textarea>
+
+                <mat-hint align="end">Mínimo 10 caracteres</mat-hint>
+
+                @if (formulario.controls.descripcion.hasError('required') && campoInvalido('descripcion')) {
+                  <mat-error>La descripción es obligatoria.</mat-error>
+                } @else if (formulario.controls.descripcion.hasError('minlength') && campoInvalido('descripcion')) {
+                  <mat-error>Debe tener al menos 10 caracteres.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Años de experiencia</mat-label>
+
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  step="1"
+                  formControlName="aniosExperiencia"
+                />
+
+                <mat-icon matSuffix>timeline</mat-icon>
+
+                @if (campoInvalido('aniosExperiencia')) {
+                  <mat-error>Ingrese una experiencia válida.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Tarifa base</mat-label>
+
+                <span matTextPrefix>₡&nbsp;</span>
+
+                <input
+                  matInput
+                  type="number"
+                  min="1"
+                  step="100"
+                  formControlName="tarifaBase"
+                  placeholder="35000"
+                />
+
+                <mat-icon matSuffix>payments</mat-icon>
+
+                @if (formulario.controls.tarifaBase.hasError('required') && campoInvalido('tarifaBase')) {
+                  <mat-error>La tarifa es obligatoria.</mat-error>
+                } @else if (formulario.controls.tarifaBase.hasError('min') && campoInvalido('tarifaBase')) {
+                  <mat-error>La tarifa debe ser mayor que cero.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Ubicación</mat-label>
+
+                <mat-select formControlName="ubicacionId" [disabled]="cargandoCatalogos()">
+                  @for (ubicacion of ubicaciones(); track ubicacion.id) {
+                    <mat-option [value]="ubicacion.id">
+                      {{ obtenerTextoUbicacion(ubicacion) }}
+                    </mat-option>
+                  }
+                </mat-select>
+
+                @if (campoInvalido('ubicacionId')) {
+                  <mat-error>Seleccione una ubicación.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Especialidad(es)</mat-label>
+
+                <mat-select formControlName="especialidadIds" multiple [disabled]="cargandoCatalogos()">
+                  @for (especialidad of especialidades(); track especialidad.id) {
+                    <mat-option [value]="especialidad.id">
+                      {{ especialidad.nombre }}
+                    </mat-option>
+                  }
+                </mat-select>
+
+                @if (campoInvalido('especialidadIds')) {
+                  <mat-error>Seleccione al menos una especialidad.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon image-icon">
+                <mat-icon>description</mat-icon>
+              </div>
+
+              <div>
+                <span class="section-label">Credenciales del profesional</span>
+                <h2>Documento de respaldo (PDF)</h2>
+                <p>
+                  Adjunta tu título, certificación o licencia profesional en PDF.
+                  Solo el equipo administrador podrá revisarlo.
+                </p>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+              <div class="image-upload full-width">
+                <input
+                  #credencialInput
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  hidden
+                  (change)="seleccionarCredencial($event)"
+                />
+
+                <div class="image-preview">
+                  <div class="image-placeholder">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                  </div>
+                </div>
+
+                <div class="image-upload-content">
+                  <strong>Credencial profesional (PDF)</strong>
+
+                  <p>Título universitario, certificación o licencia. Máximo 5 MB.</p>
+
+                  @if (credencialSeleccionada()) {
+                    <span class="selected-file">
+                      <mat-icon>check_circle</mat-icon>
+                      {{ credencialSeleccionada()?.name }}
+                    </span>
+                  }
+
+                  @if (errorCredencial()) {
+                    <span class="image-error">
+                      <mat-icon>error</mat-icon>
+                      {{ errorCredencial() }}
+                    </span>
+                  }
+
+                  <div class="image-actions">
+                    <button
+                      mat-stroked-button
+                      type="button"
+                      class="select-image-button"
+                      (click)="credencialInput.click()"
+                    >
+                      <mat-icon>upload</mat-icon>
+                      {{ credencialSeleccionada() ? 'Cambiar PDF' : 'Adjuntar PDF' }}
+                    </button>
+
+                    @if (credencialSeleccionada()) {
+                      <button
+                        mat-button
+                        type="button"
+                        class="remove-image-button"
+                        (click)="eliminarCredencial(credencialInput)"
+                      >
+                        <mat-icon>delete_outline</mat-icon>
+                        Quitar
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </mat-card-content>
+
+        <mat-card-actions class="form-actions">
+          <button
+            mat-stroked-button
+            type="button"
+            class="cancel-button"
+            [disabled]="enviando()"
+            (click)="cancelar()"
+          >
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+
+          <button mat-flat-button type="submit" class="save-button" [disabled]="enviando()">
+            <mat-icon>{{ enviando() ? 'hourglass_top' : 'send' }}</mat-icon>
+            {{ enviando() ? 'Enviando...' : 'Enviar solicitud' }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</section>

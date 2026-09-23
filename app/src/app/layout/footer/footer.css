@@ -1,0 +1,47 @@
+.footer {
+  background: var(--mat-sys-surface-container);
+  padding: 32px 40px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.footer-content strong {
+  font-family: var(--font-script);
+  font-size: 22px;
+  color: var(--mat-sys-primary);
+}
+
+.footer-content p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.footer-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.footer-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-meta mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  color: var(--mat-sys-primary);
+}

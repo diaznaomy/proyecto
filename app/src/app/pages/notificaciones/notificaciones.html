@@ -1,0 +1,60 @@
+<section class="notif-page">
+  <div class="notif-wrapper">
+
+    <header class="notif-page-header">
+      <div>
+        <span class="hero-label">
+          <mat-icon>notifications</mat-icon>
+          Serena
+        </span>
+        <h1>Centro de notificaciones</h1>
+        <p>Aquí encuentras todo lo que necesitas saber sobre tus citas, mensajes y avisos.</p>
+      </div>
+
+      @if (noLeidas() > 0) {
+      <button type="button" mat-flat-button class="marcar-btn" (click)="marcarTodasComoLeidas()">
+        Marcar todas como leídas
+      </button>
+      }
+    </header>
+
+    <div class="notif-toolbar">
+      <mat-button-toggle-group
+        [value]="filtro()"
+        (change)="cambiarFiltro($event.value)"
+        aria-label="Filtro de notificaciones"
+      >
+        <mat-button-toggle value="todas">Todas</mat-button-toggle>
+        <mat-button-toggle value="no-leidas">
+          No leídas @if (noLeidas() > 0) { ({{ noLeidas() }}) }
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <div class="notif-list">
+      @if (cargando()) {
+      <p class="notif-page-empty">Cargando notificaciones…</p>
+      } @else if (notificaciones().length === 0) {
+      <div class="notif-page-empty">
+        <mat-icon>notifications_off</mat-icon>
+        <p>No hay notificaciones para mostrar.</p>
+      </div>
+      } @else {
+      @for (n of notificaciones(); track n.id) {
+      <button type="button" class="notif-card" [class.unread]="!n.leida" (click)="abrir(n)">
+        <span class="notif-card-icon">{{ iconoDe(n) }}</span>
+        <span class="notif-card-content">
+          <span class="notif-card-title">{{ n.titulo }}</span>
+          <span class="notif-card-message">{{ n.mensaje }}</span>
+          <span class="notif-card-time">{{ n.createdAt | date: 'medium' }}</span>
+        </span>
+        @if (!n.leida) {
+        <span class="notif-dot" aria-hidden="true"></span>
+        }
+      </button>
+      }
+      }
+    </div>
+
+  </div>
+</section>

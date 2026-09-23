@@ -1,0 +1,208 @@
+<section class="cita-form-page">
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div>
+        <span class="hero-label"><mat-icon>spa</mat-icon> Serena</span>
+        <h1>Solicitar cita</h1>
+        <p>Elija el servicio y reserve uno de los espacios libres en la agenda del profesional.</p>
+      </div>
+      <div class="hero-icon"><mat-icon>calendar_month</mat-icon></div>
+    </header>
+
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
+      <mat-card class="form-card"
+        ><mat-card-content>
+          <div class="pending-state">
+            <mat-icon>schedule</mat-icon>
+            <div>
+              <strong>Estado inicial: Pendiente</strong
+              ><span>El profesional revisará su solicitud.</span>
+            </div>
+          </div>
+
+          <section class="form-section">
+            <div class="section-title">
+              <span>1</span>
+              <div>
+                <h2>Profesional y servicio</h2>
+                <p>La modalidad, duración y monto se completan automáticamente.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="readonly-field">
+                <span>Cliente</span><strong>{{ nombreCliente(clientes()[0]) }}</strong>
+              </div>
+              <mat-form-field appearance="outline"
+                ><mat-label>Profesional</mat-label
+                ><mat-select formControlName="profesionalId">
+                  @for (profesional of profesionales(); track profesional.id) {
+                    <mat-option [value]="profesional.id"
+                      >{{ nombreProfesional(profesional) }} —
+                      {{ profesional.tituloProfesional }}</mat-option
+                    >
+                  }
+                </mat-select>
+                @if (campoInvalido('profesionalId')) {
+                  <mat-error>Seleccione un profesional.</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width"
+                ><mat-label>Servicio</mat-label
+                ><mat-select
+                  formControlName="servicioId"
+                  (selectionChange)="seleccionarServicio($event.value)"
+                >
+                  @for (servicio of serviciosDelProfesional(); track servicio.id) {
+                    <mat-option [value]="servicio.id">{{ servicio.nombre }}</mat-option>
+                  }
+                </mat-select>
+                @if (campoInvalido('servicioId')) {
+                  <mat-error>Seleccione un servicio.</mat-error>
+                }
+                @if (errorServicios()) {
+                  <mat-hint class="error-hint">No fue posible cargar los servicios.</mat-hint>
+                }
+              </mat-form-field>
+            </div>
+
+            @if (servicioSeleccionado(); as servicio) {
+              <div class="service-summary">
+                <article>
+                  <mat-icon>schedule</mat-icon><span>Duración</span
+                  ><strong>{{ servicio.duracionEstimada }} minutos</strong>
+                </article>
+                <article>
+                  <mat-icon>{{
+                    servicio.modalidad.nombre.toLowerCase().includes('virtual')
+                      ? 'videocam'
+                      : 'location_on'
+                  }}</mat-icon
+                  ><span>Modalidad</span><strong>{{ servicio.modalidad.nombre }}</strong>
+                </article>
+                <article>
+                  <mat-icon>payments</mat-icon><span>Monto estimado</span
+                  ><strong>{{
+                    servicio.precio | currency: 'CRC' : 'symbol-narrow' : '1.0-0'
+                  }}</strong>
+                </article>
+              </div>
+            }
+          </section>
+
+          <section class="form-section">
+            <div class="section-title">
+              <span>2</span>
+              <div>
+                <h2>Fecha y horario</h2>
+                <p>Los bloques ocupados y las horas pasadas no pueden seleccionarse.</p>
+              </div>
+            </div>
+            <mat-form-field appearance="outline" class="date-field"
+              ><mat-label>Fecha de la cita</mat-label
+              ><input
+                matInput
+                [matDatepicker]="pickerFecha"
+                formControlName="fecha"
+                [min]="fechaMinima()"
+                readonly
+              /><mat-datepicker-toggle matIconSuffix [for]="pickerFecha"></mat-datepicker-toggle
+              ><mat-datepicker #pickerFecha></mat-datepicker>
+              @if (campoInvalido('fecha')) {
+                <mat-error>Seleccione una fecha.</mat-error>
+              }
+            </mat-form-field>
+
+            @if (cargandoAgenda()) {
+              <div class="agenda-state">
+                <mat-icon>hourglass_top</mat-icon><span>Consultando agenda...</span>
+              </div>
+            } @else if (disponibilidad(); as agenda) {
+              <div class="agenda-header">
+                <div>
+                  <strong>Agenda del día</strong
+                  ><span>{{ agenda.jornada.inicio }}–{{ agenda.jornada.fin }}</span>
+                </div>
+                <div class="legend">
+                  <span><i class="free"></i>Libre</span><span><i class="busy"></i>Ocupado</span
+                  ><span><i class="selected"></i>Seleccionado</span>
+                </div>
+              </div>
+              <div class="agenda-grid">
+                @for (bloque of agenda.bloques; track bloque.hora) {
+                  <button
+                    type="button"
+                    class="time-block"
+                    [class.occupied]="!bloque.disponible"
+                    [class.past]="bloque.motivo === 'Hora pasada'"
+                    [class.selected]="formulario.controls.hora.value === bloque.hora"
+                    [disabled]="!bloque.disponible"
+                    (click)="seleccionarBloque(bloque)"
+                  >
+                    <strong>{{ bloque.hora }}</strong
+                    ><span>{{
+                      bloque.disponible ? 'hasta ' + bloque.horaFin : bloque.motivo
+                    }}</span>
+                  </button>
+                }
+              </div>
+              @if (campoInvalido('hora')) {
+                <p class="field-error">Seleccione un bloque disponible.</p>
+              }
+            } @else {
+              <div class="agenda-state">
+                <mat-icon>touch_app</mat-icon
+                ><span>Seleccione profesional, servicio y fecha para consultar horarios.</span>
+              </div>
+            }
+          </section>
+
+          <section class="form-section">
+            <div class="section-title">
+              <span>3</span>
+              <div>
+                <h2>Confirmación</h2>
+                <p>Revise el resumen antes de enviar la solicitud.</p>
+              </div>
+            </div>
+            @if (bloqueSeleccionado(); as bloque) {
+              <div class="appointment-summary">
+                <mat-icon>event_available</mat-icon>
+                <div>
+                  <span>Horario seleccionado</span
+                  ><strong>{{ bloque.hora }} – {{ bloque.horaFin }}</strong>
+                </div>
+                <div>
+                  <span>Monto estimado</span
+                  ><strong>{{
+                    servicioSeleccionado()?.precio | currency: 'CRC' : 'symbol-narrow' : '1.0-0'
+                  }}</strong>
+                </div>
+              </div>
+            }
+            <mat-form-field appearance="outline" class="full-width"
+              ><mat-label>Motivo o comentario</mat-label
+              ><textarea matInput rows="4" formControlName="comentario" maxlength="1000"></textarea
+              ><mat-hint>Mínimo 5 caracteres</mat-hint>
+              @if (campoInvalido('comentario')) {
+                <mat-error>Ingrese un comentario válido.</mat-error>
+              }
+            </mat-form-field>
+          </section>
+        </mat-card-content>
+        <mat-card-actions class="form-actions"
+          ><button mat-stroked-button type="button" (click)="cancelar()" [disabled]="guardando()">
+            <mat-icon>close</mat-icon>Cancelar</button
+          ><button
+            mat-flat-button
+            type="submit"
+            class="save-button"
+            [disabled]="guardando() || !bloqueSeleccionado()"
+          >
+            <mat-icon>{{ guardando() ? 'hourglass_top' : 'send' }}</mat-icon
+            >{{ guardando() ? 'Enviando...' : 'Enviar solicitud' }}
+          </button></mat-card-actions
+        ></mat-card
+      >
+    </form>
+  </div>
+</section>

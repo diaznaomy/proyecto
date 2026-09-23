@@ -1,0 +1,15 @@
+<section class="services" id="servicios">
+  <h2 class="services__title">¿Cómo podemos ayudarte?</h2>
+
+  <div class="services__grid">
+    @for (card of cards(); track card.title) {
+      <mat-card class="card" [class]="'card--' + card.variant">
+        <img class="card__badge" [src]="card.badge" [alt]="card.title" />
+        <mat-card-content>
+          <h3 class="card__title">{{ card.title }}</h3>
+          <p class="card__text">{{ card.description }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</section>

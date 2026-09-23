@@ -1,0 +1,140 @@
+<section class="doc-dashboard">
+
+    <!-- KPIs del profesional -->
+  <div class="kpi-grid">
+    <article class="kpi-card pink">
+      <span class="section-label">PACIENTES</span>
+      <strong>{{ pacientes.length }}</strong>
+      <span class="kpi-caption">Pacientes atendidos</span>
+    </article>
+
+    <article class="kpi-card mint">
+      <span class="section-label">CITAS</span>
+      <strong>{{ citas.length }}</strong>
+      <span class="kpi-caption">Citas totales</span>
+    </article>
+
+    <article class="kpi-card cream">
+      <span class="section-label">ESTE MES</span>
+      <strong>{{ citasEsteMes }}</strong>
+      <span class="kpi-caption">Citas este mes</span>
+    </article>
+
+    <article class="kpi-card white">
+      <span class="section-label">ESTE AÑO</span>
+      <strong>{{ citasEsteAnio }}</strong>
+      <span class="kpi-caption">Citas este año</span>
+    </article>
+
+    <article class="kpi-card dark">
+      <span class="section-label">COMPLETADAS</span>
+      <strong>{{ citasCompletadasTotal }}</strong>
+      <span class="kpi-caption">Citas completadas</span>
+    </article>
+  </div>
+
+  <!-- Fila de gráficos -->
+  <div class="chart-grid">
+    <article class="chart-card cream">
+      <header>
+        <span class="section-label">PACIENTES</span>
+        <h3>Gráfico de edades</h3>
+      </header>
+      <div class="chart-box"><canvas #edadesCanvas></canvas></div>
+    </article>
+
+    <article class="chart-card pink">
+      <header>
+        <span class="section-label">CITAS</span>
+        <h3>Visitas al mes</h3>
+      </header>
+      <div class="chart-box"><canvas #visitasCanvas></canvas></div>
+    </article>
+
+    <article class="chart-card mint">
+      <header>
+        <span class="section-label">SERVICIOS</span>
+        <h3>Tipo de especialidad solicitada</h3>
+      </header>
+      <div class="chart-box"><canvas #serviciosCanvas></canvas></div>
+    </article>
+
+    <article class="chart-card white">
+      <header>
+        <span class="section-label">ESTADO</span>
+        <h3>Estado de las citas</h3>
+      </header>
+      <div class="chart-box small"><canvas #estadoCanvas></canvas></div>
+    </article>
+  </div>
+
+  <!-- Lista de pacientes + detalle -->
+  <div class="patients-layout">
+    <div class="patients-list-card">
+      <header class="card-header">
+        <div>
+          <span class="section-label">PACIENTES</span>
+          <h2>Lista de pacientes</h2>
+        </div>
+      </header>
+
+      <div class="patients-list">
+        <div
+          class="patient-row"
+          *ngFor="let paciente of pacientes"
+          [class.active]="pacienteSeleccionado?.id === paciente.id"
+          (click)="toggleExpand(paciente)"
+        >
+          <div class="patient-avatar">{{ paciente.nombre.charAt(0) }}</div>
+
+          <div class="patient-main">
+            <strong>{{ paciente.nombre }}</strong>
+            <span>{{ paciente.edad !== null ? paciente.edad + ' años' : 'Edad no registrada' }} · {{ paciente.citas.length }} cita(s)</span>
+          </div>
+
+          <span class="status" [style.background]="'#eee'" >{{ estadoNombre(paciente.ultimaCita) }}</span>
+
+          <span class="chevron" [class.open]="pacienteSeleccionado?.id === paciente.id">›</span>
+        </div>
+
+        <div class="empty-state" *ngIf="!pacientes.length">
+          Aún no hay pacientes con citas registradas.
+        </div>
+      </div>
+    </div>
+
+    <div class="patient-detail-card" *ngIf="pacienteSeleccionado as p">
+      <header class="card-header">
+        <div>
+          <span class="section-label">DETALLE</span>
+          <h2>{{ p.nombre }}</h2>
+        </div>
+        <span class="status-pill" [attr.data-estado]="estadoNombre(p.ultimaCita)">
+          {{ estadoNombre(p.ultimaCita) }}
+        </span>
+      </header>
+
+      <div class="detail-body">
+        <div class="detail-block">
+          <span class="section-label">PACIENTE</span>
+          <p><strong>Nombre:</strong> {{ p.nombre }}</p>
+          <p><strong>Edad:</strong> {{ p.edad !== null ? p.edad + ' años' : 'No registrada' }}</p>
+          <p *ngIf="p.telefono"><strong>Teléfono:</strong> {{ p.telefono }}</p>
+        </div>
+
+        <div class="detail-block">
+          <span class="section-label">INFORMACIÓN DE LA CITA</span>
+          <p><strong>Fecha:</strong> {{ p.ultimaCita.fechaCita | date: 'dd/MM/yyyy' }}</p>
+          <p><strong>Hora:</strong> {{ p.ultimaCita.horaInicio | date: 'HH:mm' }}</p>
+          <p><strong>Servicio:</strong> {{ p.ultimaCita.servicio.nombre }}</p>
+        </div>
+
+        <div class="detail-block">
+          <span class="section-label">RESEÑA DEL DOCTOR</span>
+          <p class="resena">{{ resenaDoc(p.ultimaCita) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

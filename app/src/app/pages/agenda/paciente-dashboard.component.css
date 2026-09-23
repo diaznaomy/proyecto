@@ -1,0 +1,210 @@
+:host {
+  display: block;
+}
+
+.paciente-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #a0bbb2;
+  margin-bottom: 6px;
+}
+
+/* ===== Charts ===== */
+
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.chart-card {
+  border-radius: 22px;
+  padding: 20px 22px;
+  min-height: 260px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card.white {
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 10px 28px rgba(81, 54, 29, 0.06);
+}
+
+.chart-card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #51361d;
+}
+
+.chart-box {
+  position: relative;
+  flex: 1;
+  margin-top: 14px;
+}
+
+/* ===== History + detail ===== */
+
+.history-layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.history-list-card,
+.detail-card {
+  background: #ffffff;
+  border: none;
+  border-radius: 26px;
+  box-shadow: 0 12px 32px rgba(81, 54, 29, 0.07);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 22px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(160, 187, 178, 0.2);
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #51361d;
+}
+
+.history-list {
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(160, 187, 178, 0.14);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.history-row:hover {
+  background: #fbf6ee;
+}
+
+.history-row.active {
+  background: #fbeaef;
+}
+
+.history-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-date strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: #51361d;
+  text-transform: capitalize;
+}
+
+.history-date span {
+  font-size: 11px;
+  color: #918174;
+}
+
+.history-main strong {
+  display: block;
+  font-size: 13px;
+  color: #51361d;
+}
+
+.history-main span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: #918174;
+}
+
+.status-pill {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  text-transform: capitalize;
+  color: #ffffff;
+  background: #a0bbb2;
+  box-shadow: 0 6px 14px rgba(160, 187, 178, 0.3);
+  justify-self: end;
+}
+
+.status-pill[data-estado='pendiente']  { background: #e0b94a; box-shadow: 0 6px 14px rgba(224, 185, 74, 0.3); }
+.status-pill[data-estado='cancelada']  { background: #da7d91; box-shadow: 0 6px 14px rgba(218, 125, 145, 0.3); }
+.status-pill[data-estado='completada'] { background: #51361d; box-shadow: 0 6px 14px rgba(81, 54, 29, 0.25); }
+
+.detail-body {
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-block p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #51361d;
+}
+
+.detail-block p strong {
+  color: #78695e;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.resena {
+  background: #fbf6ee;
+  border-left: 3px solid #da7d91;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-style: italic;
+  color: #6b5b4c;
+}
+
+.empty-state {
+  padding: 34px 24px;
+  color: #918174;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .top-row {
+    grid-template-columns: 1fr;
+  }
+  .history-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .card-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}

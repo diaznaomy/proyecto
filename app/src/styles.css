@@ -1,0 +1,228 @@
+.primary-button {
+    background-color: var(--mat-sys-primary) !important;
+    color: var(--mat-sys-on-primary) !important;
+}
+
+.secondary-button {
+    background-color: var(--mat-sys-secondary) !important;
+    color: var(--mat-sys-on-secondary) !important;
+}
+
+.tertiary-button {
+    background-color: var(--mat-sys-tertiary) !important;
+    color: var(--mat-sys-on-tertiary) !important;
+}
+
+.primary-icon-button {
+    color: var(--mat-sys-primary) !important;
+}
+
+.secondary-icon-button {
+    color:  var(--mat-sys-secondary) !important;
+}
+
+.tertiary-icon-button {
+    color: var(--mat-sys-tertiary) !important;
+}
+.create-button {
+    background-color: #2e7d32 !important;
+    color: white !important;
+}
+
+.view-button {
+    background-color: #1976d2 !important;
+    color: white !important;
+}
+
+.edit-button {
+    background-color: #f57c00 !important;
+    color: white !important;
+}
+
+.delete-button {
+    background-color: #d32f2f !important;
+    color: white !important;
+}
+.create-icon-button {
+    color: #2e7d32 !important;
+}
+
+.view-icon-button {
+    color:  #1976d2 !important;
+}
+
+.edit-icon-button {
+    color: #f57c00 !important;
+}
+
+.delete-icon-button {
+    color: #d32f2f !important;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    background:#51361D;
+
+    font-family:"Glacial Indifference",sans-serif;
+
+    color:#51361D;
+
+    overflow-x:hidden;
+
+}
+
+:root{
+
+  /* Colores */
+
+  --color-primary:#F1E7C8;
+  --color-secondary:#DA7D91;
+  --color-tertiary:#A0BBB2;
+
+  --color-brown:#51361D;
+  --color-white:#F6FFFA;
+
+  /* Layout */
+
+  --container:1280px;
+
+  --radius-sm:16px;
+  --radius-md:24px;
+  --radius-lg:32px;
+  --radius-xl:999px;
+
+  /* Sombras */
+
+  --shadow-soft:
+      0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.mat-mdc-input-element,
+.mat-mdc-select-value-text,
+.mat-mdc-select-min-line,
+textarea.mat-mdc-input-element {
+  color: #51361D !important;
+}
+
+/* Color de las etiquetas (Nombre, Apellidos, etc.) */
+.mdc-floating-label {
+  color: #51361D !important;
+}
+
+/* Cuando el campo está enfocado */
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+  color: #DA7D91 !important;
+}
+
+/* Panel del menú */
+.mat-mdc-menu-panel{
+
+    border-radius:22px !important;
+
+    background:rgba(255,255,255,.90) !important;
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.45);
+
+    box-shadow:0 18px 40px rgba(0,0,0,.12) !important;
+
+    overflow:hidden;
+
+}
+
+/* Contenido */
+
+.mat-mdc-menu-content{
+
+    padding:10px !important;
+
+}
+
+/* Opciones */
+
+.mat-mdc-menu-item{
+
+    min-height:48px !important;
+
+    border-radius:14px;
+
+    font-family:"Chau Philomene One", sans-serif !important;
+
+    font-size:17px !important;
+
+    color:#51361D !important;
+
+    transition:.25s;
+
+}
+
+.mat-mdc-menu-item:hover{
+
+    background:#F9EDF0 !important;
+
+    color:#DA7D91 !important;
+
+}
+
+.mat-mdc-menu-item .mdc-list-item__primary-text{
+
+    font-family:"Chau Philomene One", sans-serif !important;
+
+}
+
+/* Diálogo de especialidades: superficie Serena en lugar del tema oscuro base. */
+.serena-specialty-dialog .mat-mdc-dialog-surface {
+    border: 1px solid rgba(81,54,29,.10) !important;
+    border-radius: 28px !important;
+    background: #F6FFFA !important;
+    color: #51361D !important;
+    box-shadow: 0 24px 65px rgba(81,54,29,.22) !important;
+    overflow: hidden !important;
+}
+
+.serena-dialog-backdrop {
+    background: rgba(81,54,29,.38) !important;
+    backdrop-filter: blur(4px);
+}
+
+.serena-specialty-dialog .mat-mdc-form-field {
+    --mat-form-field-outlined-label-text-color: #51361D;
+    --mat-form-field-outlined-input-text-color: #51361D;
+    --mat-form-field-outlined-outline-color: rgba(81,54,29,.28);
+    --mat-form-field-outlined-focus-outline-color: #DA7D91;
+    --mat-form-field-outlined-focus-label-text-color: #DA7D91;
+}
+
+.serena-specialty-dialog textarea,
+.serena-specialty-dialog input {
+    caret-color: #DA7D91 !important;
+}
+
+.serena-specialty-select.mat-mdc-select-panel {
+    border: 1px solid rgba(81,54,29,.10);
+    border-radius: 18px !important;
+    background: #F6FFFA !important;
+}
+
+.serena-specialty-select .mat-mdc-option {
+    color: #51361D !important;
+}
+
+.serena-specialty-select .mat-mdc-option:hover,
+.serena-specialty-select .mat-mdc-option.mdc-list-item--selected {
+    background: rgba(218,125,145,.14) !important;
+}

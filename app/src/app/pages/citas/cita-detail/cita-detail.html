@@ -1,0 +1,251 @@
+<section class="detail-page">
+  @if (cargando()) {
+    <div class="state">
+      <mat-icon>hourglass_top</mat-icon>
+      <p>Cargando cita...</p>
+    </div>
+  } @else if (cita(); as registro) {
+    <mat-card class="detail-card">
+      <header class="detail-header">
+        <div>
+          <span class="label">
+            Detalle de cita
+          </span>
+
+          <h1>
+            {{ registro.servicio.nombre }}
+          </h1>
+
+          <p>
+            Cita de
+            {{ nombreCliente(registro) }}
+            con
+            {{ nombreProfesional(registro) }}
+          </p>
+        </div>
+
+        <span
+          class="status"
+          [attr.data-status]="
+            registro.estadoCita.nombre
+              .toLowerCase()
+          "
+        >
+          {{ registro.estadoCita.nombre }}
+        </span>
+      </header>
+
+      <mat-card-content>
+        <div class="detail-grid">
+          <section class="info-card">
+            <h2>Cliente</h2>
+
+            <p>
+              <mat-icon>person</mat-icon>
+              {{ nombreCliente(registro) }}
+            </p>
+
+            <p>
+              <mat-icon>mail</mat-icon>
+              {{ registro.cliente.correo }}
+            </p>
+
+            <p>
+              <mat-icon>phone</mat-icon>
+              {{
+                registro.cliente.telefono ||
+                  'Sin teléfono registrado'
+              }}
+            </p>
+          </section>
+
+          <section class="info-card">
+            <h2>Profesional</h2>
+
+            <p>
+              <mat-icon>medical_services</mat-icon>
+              {{ nombreProfesional(registro) }}
+            </p>
+
+            <p>
+              <mat-icon>workspace_premium</mat-icon>
+              {{
+                registro.profesional
+                  .tituloProfesional
+              }}
+            </p>
+          </section>
+
+          <section class="info-card">
+            <h2>Fecha y hora</h2>
+
+            <p>
+              <mat-icon>calendar_month</mat-icon>
+
+              {{
+                registro.fechaCita
+                  | date: 'dd/MM/yyyy'
+              }}
+            </p>
+
+            <p>
+              <mat-icon>schedule</mat-icon>
+
+              {{
+                registro.horaInicio
+                  | date: 'hh:mm a'
+              }}
+              –
+              {{
+                registro.horaFin
+                  | date: 'hh:mm a'
+              }}
+            </p>
+          </section>
+
+          <section class="info-card">
+            <h2>Servicio</h2>
+
+            <p>
+              <mat-icon>spa</mat-icon>
+              {{ registro.servicio.nombre }}
+            </p>
+
+            <p>
+              <mat-icon>videocam</mat-icon>
+              {{ registro.modalidad.nombre }}
+            </p>
+
+            <p>
+              <mat-icon>payments</mat-icon>
+
+              {{
+                registro.montoEstimado
+                  | currency:
+                    'CRC':
+                    'symbol-narrow':
+                    '1.0-0'
+              }}
+            </p>
+          </section>
+
+          <section class="info-card full-width">
+            <h2>Descripción o comentario</h2>
+
+            <p class="comment">
+              {{
+                registro.comentarioCliente ||
+                  'Sin comentario registrado'
+              }}
+            </p>
+          </section>
+
+          @if (registro.resena) {
+            <section class="info-card full-width review-card">
+              <h2>Reseña registrada</h2>
+              <div class="stars readonly">
+                @for (estrella of [1, 2, 3, 4, 5]; track estrella) {
+                  <mat-icon [class.active]="estrella <= registro.resena.puntuacion">
+                    star
+                  </mat-icon>
+                }
+              </div>
+              <p class="comment">
+                {{ registro.resena.comentario || 'Sin comentario adicional.' }}
+              </p>
+            </section>
+          } @else if (puedeResenar(registro)) {
+            <section class="info-card full-width review-card">
+              <h2>Califique su experiencia</h2>
+              <p class="review-help">Seleccione de 1 a 5 estrellas.</p>
+              <div class="stars">
+                @for (estrella of [1, 2, 3, 4, 5]; track estrella) {
+                  <button
+                    type="button"
+                    class="star-button"
+                    [attr.aria-label]="'Calificar con ' + estrella + ' estrellas'"
+                    (click)="seleccionarPuntuacion(estrella)"
+                  >
+                    <mat-icon [class.active]="estrella <= puntuacion()">star</mat-icon>
+                  </button>
+                }
+              </div>
+              <textarea
+                class="review-comment"
+                rows="4"
+                maxlength="1000"
+                [(ngModel)]="comentarioResena"
+                placeholder="Cuéntenos cómo fue su experiencia (opcional)"
+              ></textarea>
+              <button
+                mat-flat-button
+                type="button"
+                class="submit-review"
+                [disabled]="guardandoResena()"
+                (click)="enviarResena()"
+              >
+                <mat-icon>rate_review</mat-icon>
+                {{ guardandoResena() ? 'Publicando...' : 'Publicar reseña' }}
+              </button>
+            </section>
+          }
+
+          <section class="info-card full-width">
+            <h2>Historial de estados</h2>
+            <div class="timeline">
+              @for (cambio of registro.historialEstados; track cambio.id) {
+                <article class="timeline-item">
+                  <mat-icon>history</mat-icon>
+                  <div>
+                    <strong>{{ cambio.estadoNuevo.nombre }}</strong>
+                    <span>
+                      {{ cambio.fechaCambio | date: 'dd/MM/yyyy hh:mm a' }} ·
+                      {{ cambio.usuario.nombre }} {{ cambio.usuario.apellidos }}
+                      ({{ cambio.usuario.rol.nombre }})
+                    </span>
+                    @if (cambio.comentario) {
+                      <p>{{ cambio.comentario }}</p>
+                    }
+                  </div>
+                </article>
+              } @empty {
+                <p class="comment">No hay cambios registrados todavía.</p>
+              }
+            </div>
+          </section>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="volver()"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+
+        <span class="action-spacer"></span>
+
+        @for (accion of accionesDisponibles(registro); track accion) {
+          <button
+            mat-flat-button
+            type="button"
+            [disabled]="procesando()"
+            [attr.data-action]="accion.toLowerCase()"
+            (click)="cambiarEstado(accion)"
+          >
+            <mat-icon>{{ iconoAccion(accion) }}</mat-icon>
+            {{ accion }}
+          </button>
+        }
+      </mat-card-actions>
+    </mat-card>
+  } @else {
+    <div class="state">
+      <mat-icon>event_busy</mat-icon>
+      <p>Cita no encontrada.</p>
+    </div>
+  }
+</section>

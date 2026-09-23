@@ -1,0 +1,338 @@
+.auth-page {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-image: url('/assets/uploads/auth/SignIn.jpeg');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   TARJETA DEL FORMULARIO (forma de arco = form.png)
+   ========================= */
+
+.auth-card {
+  width: 100%;
+  max-width: 490px;
+
+  padding: 8rem 3.8rem 4.5rem;
+  margin-top: 8rem;
+
+  box-sizing: border-box;
+
+  background-image: url('/assets/uploads/auth/form.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+
+  position: relative;
+}
+
+
+/* =========================
+   LOGOS
+   ========================= */
+
+.auth-logo-icon {
+  display: block;
+  width: 150px;
+  height: auto;
+  margin: -3rem auto 0.2rem;
+}
+
+.auth-logo-text {
+  display: block;
+  width: 190px;
+  height: auto;
+  margin: -0.5rem auto 0.3rem;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #a8836f;
+  margin: 0 0 1.6rem; 
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+
+/* =========================
+   TÍTULO
+   ========================= */
+ 
+.auth-card h1 {
+  margin: 0;
+ 
+  text-align: center;
+ 
+  color: #b25c74;
+ 
+  font-family: Georgia, 'Times New Roman', serif;
+ 
+  font-size: 2.5rem;
+  font-weight: 400;
+ 
+  letter-spacing: 0.02em;
+}
+
+/* =========================
+   ERROR
+   ========================= */
+
+.auth-error {
+  background: rgba(218, 125, 145, 0.13);
+
+  color: #9d5264;
+
+  border: 1px solid rgba(218, 125, 145, 0.3);
+
+  border-radius: 12px;
+
+  padding: 0.75rem 1rem;
+
+  margin-bottom: 1.25rem;
+
+  font-size: 0.85rem;
+
+  text-align: center;
+}
+
+
+/* =========================
+   CAMPOS
+   ========================= */
+
+.campo {
+  margin-bottom: 1.1rem;
+  margin-top: 0.2rem;
+}
+
+
+.campo-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+
+.campo-icon {
+  position: absolute;
+  left: 1.1rem;
+
+  display: flex;
+  align-items: center;
+
+  width: 18px;
+  height: 18px;
+
+  color: #c98a9a;
+
+  pointer-events: none;
+}
+
+
+.campo input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1.5px solid rgba(201, 138, 154, 0.5);
+
+  background: rgba(255, 255, 255, 0.55);
+
+  color: #6b4c3a;
+
+  border-radius: 999px;
+
+  padding: 0.85rem 1rem 0.85rem 2.9rem;
+
+  font-size: 0.92rem;
+
+  font-family: inherit;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.campo input::placeholder {
+  color: #b8998e;
+}
+
+
+.campo input:focus {
+  border-color: #c96d82;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  box-shadow:
+    0 0 0 3px rgba(218, 125, 145, 0.15);
+}
+
+
+.campo-input-wrapper:focus-within .campo-icon {
+  color: #da7d91;
+}
+
+
+/* =========================
+   ERRORES DE CAMPO
+   ========================= */
+
+.campo-error {
+  display: block;
+
+  color: #a65366;
+
+  font-size: 0.76rem;
+
+  margin: 0.35rem 0 0 1.1rem;
+}
+
+
+/* =========================
+   BOTÓN
+   ========================= */
+
+.boton-primario {
+  width: 100%;
+
+  border: none;
+
+  background: linear-gradient(135deg, #c96d82, #b0546b);
+
+  color: #fff;
+
+  border-radius: 999px;
+
+  padding: 0.9rem 1rem;
+
+  font-size: 0.95rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.02em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+
+  cursor: pointer;
+
+  margin-top: 0.6rem;
+
+  box-shadow:
+    0 6px 16px rgba(176, 84, 107, 0.35);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.boton-sparkle {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+
+.boton-primario:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 20px rgba(176, 84, 107, 0.42);
+}
+
+
+.boton-primario:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+
+.boton-primario:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   LINKS
+   ========================= */
+
+.auth-forgot {
+  text-align: center;
+
+  margin: 1.9rem 0 0;
+}
+
+
+.auth-forgot a,
+.auth-footer a {
+  color: #c96d82;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  font-size: 0.85rem;
+}
+
+
+.auth-forgot a:hover,
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+
+.auth-footer {
+  text-align: center;
+
+  margin: 1rem 0 1.5rem;
+
+  color: #8a7568;
+
+  font-size: 0.84rem;
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 600px) {
+
+  .auth-page {
+    padding: 1rem;
+
+    background-position: center;
+  }
+
+  .auth-card {
+    max-width: 360px;
+
+    padding: 7rem 2rem 2rem;
+  }
+
+  .auth-card h1 {
+    font-size: 2rem;
+  }
+}

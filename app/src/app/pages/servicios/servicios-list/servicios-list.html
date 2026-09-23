@@ -1,0 +1,356 @@
+<section class="servicios-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <!-- Hero -->
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Gestión de servicios</h1>
+
+        <p>
+          Administra los servicios ofrecidos por los profesionales, consulta su información y
+          controla su disponibilidad dentro de la plataforma.
+        </p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>medical_services</mat-icon>
+      </div>
+    </header>
+
+    <!-- Card principal -->
+    <mat-card class="page-card">
+      <mat-card-content>
+        <!-- Encabezado -->
+        <div class="section-heading">
+          <div>
+            <span class="section-label"> Administración </span>
+
+            <h2>Servicios registrados</h2>
+
+            <p>
+              Busca servicios, filtra por categoría o modalidad y administra su estado cuando sea
+              necesario.
+            </p>
+          </div>
+
+          <div class="section-actions">
+            @if (puedeCrear()) {
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                class="new-button"
+                (click)="irACrear()"
+              >
+                <mat-icon>add</mat-icon>
+                Nuevo servicio
+              </button>
+            }
+
+            <button mat-raised-button color="primary" (click)="exportarPDF()">
+              <mat-icon>picture_as_pdf</mat-icon>
+              Exportar PDF
+            </button>
+
+            <div class="total-badge">
+              <mat-icon>medical_services</mat-icon>
+
+              <span>
+                {{ serviciosFiltrados().length }}
+                servicios
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label> Buscar servicio </mat-label>
+
+            <input
+              matInput
+              placeholder="Nombre del servicio"
+              [value]="terminoBusqueda()"
+              (input)="actualizarBusqueda($any($event.target).value)"
+            />
+
+            <mat-icon matSuffix> search </mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label> Categoría </mat-label>
+
+            <mat-select
+              [value]="categoriaSeleccionada()"
+              [compareWith]="compararPorValor"
+              (selectionChange)="actualizarCategoria($event.value)"
+            >
+              <mat-option value=""> Todas las categorías </mat-option>
+
+              @for (categoria of categorias(); track categoria.id) {
+                <mat-option [value]="categoria.id">
+                  {{ categoria.nombre }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label> Modalidad </mat-label>
+
+            <mat-select
+              [value]="modalidadSeleccionada()"
+              [compareWith]="compararPorValor"
+              (selectionChange)="actualizarModalidad($event.value)"
+            >
+              <mat-option value=""> Todas las modalidades </mat-option>
+
+              @for (modalidad of modalidades(); track modalidad.id) {
+                <mat-option [value]="modalidad.id">
+                  {{ modalidad.nombre }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label> Precio mínimo </mat-label>
+
+            <input
+              matInput
+              type="number"
+              min="0"
+              (input)="actualizarPrecioMinimo($any($event.target).value)"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label> Precio máximo </mat-label>
+
+            <input
+              matInput
+              type="number"
+              min="0"
+              (input)="actualizarPrecioMaximo($any($event.target).value)"
+            />
+          </mat-form-field>
+
+          @if (esCliente()) {
+            <button
+              mat-stroked-button
+              type="button"
+              class="favorite-filter-button"
+              [class.active]="soloFavoritos()"
+              (click)="toggleSoloFavoritos()"
+            >
+              <mat-icon>{{ soloFavoritos() ? 'favorite' : 'favorite_border' }}</mat-icon>
+              <span>Mis Favoritos</span>
+              @if (totalFavoritos() > 0) {
+                <span class="fav-count">{{ totalFavoritos() }}</span>
+              }
+            </button>
+          }
+        </div>
+
+        <!-- Estados -->
+
+        @if (cargando()) {
+          <div class="state-container">
+            <div class="state-icon loading-icon">
+              <mat-icon>hourglass_top</mat-icon>
+            </div>
+
+            <h3>Cargando servicios</h3>
+
+            <p>Estamos obteniendo la información de los servicios registrados.</p>
+          </div>
+        } @else if (error()) {
+          <div class="state-container">
+            <div class="state-icon">
+              <mat-icon> error_outline </mat-icon>
+            </div>
+
+            <h3>Ocurrió un problema</h3>
+
+            <p>
+              {{ error() }}
+            </p>
+
+            <button mat-raised-button color="primary" type="button" (click)="recargar()">
+              Reintentar
+            </button>
+          </div>
+        } @else if (serviciosFiltrados().length === 0) {
+          <div class="state-container">
+            <div class="state-icon">
+              <mat-icon> search_off </mat-icon>
+            </div>
+
+            <h3>No encontramos servicios</h3>
+
+            <p>Intenta cambiar los filtros de búsqueda.</p>
+          </div>
+        } @else {
+          <!-- Tabla -->
+
+          <div class="table-container">
+            <table mat-table [dataSource]="serviciosFiltrados()" class="servicios-table">
+              <!-- Servicio -->
+
+              <ng-container matColumnDef="servicio">
+                <th mat-header-cell *matHeaderCellDef>Servicio</th>
+
+                <td mat-cell *matCellDef="let servicio">
+                  <div class="name-cell">
+                    <div class="user-icon">
+                      <mat-icon> medical_services </mat-icon>
+                    </div>
+
+                    <div class="user-info">
+                      <strong>
+                        {{ servicio.nombre }}
+                      </strong>
+
+                      <small>
+                        {{ nombreProfesional(servicio) }}
+                      </small>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Categoría -->
+
+              <ng-container matColumnDef="categoria">
+                <th mat-header-cell *matHeaderCellDef>Categoría</th>
+
+                <td mat-cell *matCellDef="let servicio">
+                  <span class="role-badge">
+                    {{ nombresCategorias(servicio) }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <!-- Precio -->
+
+              <ng-container matColumnDef="precio">
+                <th mat-header-cell *matHeaderCellDef>Precio</th>
+
+                <td mat-cell *matCellDef="let servicio">
+                  {{ formatearPrecio(servicio.precio) }}
+                </td>
+              </ng-container>
+
+              <!-- Modalidad -->
+
+              <ng-container matColumnDef="modalidad">
+                <th mat-header-cell *matHeaderCellDef>Modalidad</th>
+
+                <td mat-cell *matCellDef="let servicio">
+                  <span class="role-badge">
+                    {{ servicio.modalidad.nombre }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <!-- Estado -->
+
+              <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+
+                <td mat-cell *matCellDef="let servicio">
+                  <span
+                    class="status-badge"
+                    [class.status-active]="servicio.estadoServicio.nombre === 'Activo'"
+                    [class.status-inactive]="servicio.estadoServicio.nombre !== 'Activo'"
+                  >
+                    <span class="status-dot"></span>
+
+                    {{ servicio.estadoServicio.nombre }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <!-- Acciones -->
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+
+                <td mat-cell *matCellDef="let servicio">
+                  <div class="action-buttons">
+                    @if (esCliente()) {
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        class="favorite-service-action"
+                        [class.is-favorite]="esFavorito(servicio.id)"
+                        [title]="
+                          esFavorito(servicio.id) ? 'Quitar de favoritos' : 'Guardar en favoritos'
+                        "
+                        (click)="toggleFavorito(servicio, $event)"
+                      >
+                        <mat-icon>{{
+                          esFavorito(servicio.id) ? 'favorite' : 'favorite_border'
+                        }}</mat-icon>
+                      </button>
+                    }
+
+                    <button mat-stroked-button type="button" (click)="irADetalle(servicio)">
+                      <mat-icon> visibility </mat-icon>
+                    </button>
+
+                    @if (puedeCrear()) {
+                      <button mat-stroked-button type="button" (click)="irAEditar(servicio)">
+                        <mat-icon> edit </mat-icon>
+                      </button>
+
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        class="status-button"
+                        [class.deactivate-button]="servicio.estadoServicio.nombre === 'Activo'"
+                        [class.activate-button]="servicio.estadoServicio.nombre !== 'Activo'"
+                        [disabled]="estaActualizando(servicio)"
+                        [title]="
+                          'Cambiar a ' +
+                          (servicio.estadoServicio.nombre === 'Activo' ? 'inactivo' : 'activo')
+                        "
+                        (click)="alternarEstado(servicio)"
+                      >
+                        <mat-icon>
+                          {{
+                            servicio.estadoServicio.nombre === 'Activo' ? 'toggle_off' : 'toggle_on'
+                          }}
+                        </mat-icon>
+
+                        {{
+                          estaActualizando(servicio)
+                            ? 'Actualizando...'
+                            : servicio.estadoServicio.nombre === 'Activo'
+                              ? 'Desactivar'
+                              : 'Activar'
+                        }}
+                      </button>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+
+              <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+            </table>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>

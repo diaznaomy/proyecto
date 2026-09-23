@@ -1,0 +1,105 @@
+<mat-toolbar class="toolbar">
+
+    <!-- Logo -->
+    <a routerLink="/" class="logo">
+        <img src="assets/uploads/shared/LogoSerena.png" alt="Serena">
+    </a>
+
+    <!-- Navegacion principal -->
+    <nav class="desktop-nav">
+
+        <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            Inicio
+        </a>
+
+        <a mat-button routerLink="/servicios" routerLinkActive="active-link">
+            Servicios
+        </a>
+
+        <a mat-button routerLink="/profesionales" routerLinkActive="active-link">
+            Profesionales
+        </a>
+
+        @if (authService.autenticado()) {
+        <a mat-button routerLink="/citas" routerLinkActive="active-link">
+            Citas
+        </a>
+        }
+
+    </nav>
+
+    <!-- Acciones -->
+    <div class="actions">
+
+        @if (authService.autenticado()) {
+        <app-notificaciones-bell></app-notificaciones-bell>
+        }
+
+        <button mat-icon-button class="menu-btn" [matMenuTriggerFor]="menu" aria-label="Abrir menu">
+            <mat-icon>dashboard_customize</mat-icon>
+        </button>
+
+    </div>
+
+</mat-toolbar>
+
+<mat-menu #menu="matMenu" xPosition="before" panelClass="serena-menu">
+
+    @if (authService.autenticado()) {
+
+    @if (authService.tieneRol(['Administrador'])) {
+    <button mat-menu-item routerLink="/especialidades">
+        Especialidades
+    </button>
+
+    <button mat-menu-item routerLink="/tipos-especialidad">
+        Tipos de especialidad
+    </button>
+    }
+
+    @if (authService.tieneRol(['Administrador'])) {
+    <button mat-menu-item routerLink="/usuarios">
+        Usuarios
+    </button>
+    }
+
+    <button mat-menu-item routerLink="/agenda">
+        Agenda
+    </button>
+
+    <mat-divider></mat-divider>
+    }
+
+    @if (authService.tieneRol(['Administrador', 'Profesional'])) {
+    <button mat-menu-item routerLink="/reportes">
+        Reportes
+    </button>
+    <mat-divider></mat-divider>
+    }
+
+    @if (authService.tieneRol(['Profesional'])) {
+    <button mat-menu-item routerLink="/mi-perfil-profesional">
+        Mi perfil profesional
+    </button>
+    <mat-divider></mat-divider>
+    }
+
+    @if (authService.autenticado()) {
+    <button mat-menu-item (click)="verUsuario()">
+        Ver usuario
+    </button>
+
+    <button mat-menu-item (click)="cerrarSesion()">
+        Cerrar sesión
+    </button>
+    } @else {
+    <button mat-menu-item routerLink="/login">
+        Iniciar sesión
+    </button>
+
+    <button mat-menu-item routerLink="/register">
+        Registrarse
+    </button>
+    }
+
+</mat-menu>

@@ -1,0 +1,28 @@
+main {
+  padding-top: 120px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(241, 231, 200, 0.96),
+    rgba(246, 255, 250, 0.92)
+  );
+}
+
+.home-layout {
+  padding-top: 0;
+}
+
+main:has(.auth-page) {
+  padding-top: 0;
+  background: transparent;
+}
+
+main:has(.perfil-page) {
+  padding-top: 0;
+  background: transparent;
+}
+
+main:has(.agenda-page) {
+  padding-top: 0;
+  background: transparent;
+}

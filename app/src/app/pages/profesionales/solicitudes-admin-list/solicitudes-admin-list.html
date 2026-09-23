@@ -1,0 +1,105 @@
+<section class="profesionales-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div class="hero-content">
+        <button
+          type="button"
+          class="back-link"
+          (click)="volver()"
+          style="background: none; border: none; cursor: pointer;"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          Volver a profesionales
+        </button>
+
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Solicitudes de profesional</h1>
+
+        <p>Revisa las solicitudes pendientes de aprobación.</p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>fact_check</mat-icon>
+      </div>
+    </header>
+
+    <mat-card class="page-card">
+      <mat-card-content>
+        <div class="section-heading">
+          <div>
+            <span class="section-label">Administración</span>
+            <h2>Solicitudes pendientes</h2>
+            <p>Solo se muestran las solicitudes que aún no han sido resueltas.</p>
+          </div>
+
+          <div class="heading-actions">
+            <div class="total-badge">
+              <mat-icon>hourglass_top</mat-icon>
+              <span>{{ solicitudes().length }} pendientes</span>
+            </div>
+          </div>
+        </div>
+
+        @if (cargando()) {
+          <div class="state-container">
+            <div class="state-icon loading-icon">
+              <mat-icon>spa</mat-icon>
+            </div>
+            <h3>Cargando solicitudes</h3>
+            <p>Estamos preparando la información para ti.</p>
+          </div>
+        } @else if (solicitudes().length === 0) {
+          <div class="state-container">
+            <div class="state-icon">
+              <mat-icon>task_alt</mat-icon>
+            </div>
+            <h3>No hay solicitudes pendientes</h3>
+            <p>Todas las solicitudes de profesional han sido resueltas.</p>
+          </div>
+        } @else {
+          <div class="table-container">
+            <table mat-table [dataSource]="solicitudes()" class="profesionales-table">
+              <ng-container matColumnDef="usuario">
+                <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                <td mat-cell *matCellDef="let solicitud">
+                  <strong>{{ obtenerNombreCompleto(solicitud) }}</strong>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef>Fecha de solicitud</th>
+                <td mat-cell *matCellDef="let solicitud">
+                  {{ solicitud.fechaSolicitud | date: 'dd/MM/yyyy HH:mm' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let solicitud">
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    (click)="verDetalle(solicitud)"
+                  >
+                    <mat-icon>visibility</mat-icon>
+                    Ver detalle
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+            </table>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>

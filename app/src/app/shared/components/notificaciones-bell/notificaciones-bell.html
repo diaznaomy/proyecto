@@ -1,0 +1,60 @@
+<button
+    type="button"
+    mat-icon-button
+    class="bell-btn"
+    [matMenuTriggerFor]="menu"
+    #menuTrigger="matMenuTrigger"
+    (menuOpened)="abrirMenu()"
+    [attr.aria-label]="noLeidas() > 0 ? 'Notificaciones, ' + noLeidas() + ' sin leer' : 'Notificaciones'"
+>
+    <mat-icon>notifications</mat-icon>
+
+    @if (noLeidas() > 0) {
+    <span class="badge">{{ noLeidas() > 9 ? '9+' : noLeidas() }}</span>
+    }
+</button>
+
+<mat-menu #menu="matMenu" xPosition="before" panelClass="notif-menu">
+
+    <div class="notif-panel" (click)="$event.stopPropagation()">
+
+        <header class="notif-header">
+            <span>Notificaciones</span>
+            @if (noLeidas() > 0) {
+            <button type="button" class="notif-link-btn" (click)="marcarTodasComoLeidas($event)">
+                Marcar todas leídas
+            </button>
+            }
+        </header>
+
+        <div class="notif-body">
+            @if (cargando()) {
+            <p class="notif-empty">Cargando…</p>
+            } @else if (notificaciones().length === 0) {
+            <p class="notif-empty">Todavía no tienes notificaciones.</p>
+            } @else {
+            @for (n of notificaciones(); track n.id) {
+            <button
+                type="button"
+                class="notif-item"
+                [class.unread]="!n.leida"
+                (click)="verNotificacion(n)"
+            >
+                <span class="notif-icon">{{ iconoDe(n) }}</span>
+                <span class="notif-content">
+                    <span class="notif-title">{{ n.titulo }}</span>
+                    <span class="notif-message">{{ n.mensaje }}</span>
+                    <span class="notif-time">{{ n.createdAt | date: 'short' }}</span>
+                </span>
+            </button>
+            }
+            }
+        </div>
+
+        <footer class="notif-footer">
+            <a routerLink="/notificaciones" (click)="menuTrigger.closeMenu()">Ver todas las notificaciones</a>
+        </footer>
+
+    </div>
+
+</mat-menu>

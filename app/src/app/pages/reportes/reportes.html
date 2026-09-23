@@ -1,0 +1,94 @@
+<section class="reports-page">
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div>
+        <span class="hero-label"><mat-icon>analytics</mat-icon> Serena</span>
+        <h1>Reportes</h1>
+        <p>Analice citas, desempeño profesional y calificaciones dentro del período seleccionado.</p>
+      </div>
+      <div class="hero-icon"><mat-icon>query_stats</mat-icon></div>
+    </header>
+
+    <mat-card class="filter-card">
+      <mat-card-content>
+        <div class="filters">
+          <label>Fecha desde<input type="date" [(ngModel)]="fechaDesde" /></label>
+          <label>Fecha hasta<input type="date" [(ngModel)]="fechaHasta" [min]="fechaDesde" /></label>
+          <label>Profesional
+            <select [(ngModel)]="profesionalId">
+              <option [ngValue]="null">Todos los profesionales</option>
+              @for (profesional of profesionales(); track profesional.id) {
+                <option [ngValue]="profesional.id">
+                  {{ profesional.usuario.nombre }} {{ profesional.usuario.apellidos }}
+                </option>
+              }
+            </select>
+          </label>
+          <label>Categoría
+            <select [(ngModel)]="especialidadId">
+              <option [ngValue]="null">Todas las categorías</option>
+              @for (especialidad of especialidades(); track especialidad.id) {
+                <option [ngValue]="especialidad.id">{{ especialidad.nombre }}</option>
+              }
+            </select>
+          </label>
+          <button mat-flat-button type="button" (click)="cargar()"><mat-icon>filter_alt</mat-icon>Aplicar</button>
+          <button mat-stroked-button type="button" (click)="limpiar()"><mat-icon>filter_alt_off</mat-icon>Limpiar</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    @if (cargando()) {
+      <div class="state"><mat-icon>hourglass_top</mat-icon><p>Generando reportes...</p></div>
+    } @else if (datos(); as reporte) {
+      <div class="period-banner">
+        <mat-icon>date_range</mat-icon>
+        <span><strong>Período aplicado:</strong> {{ periodoAplicado(reporte) }}</span>
+      </div>
+      <div class="summary-grid">
+        <article><mat-icon>event</mat-icon><strong>{{ reporte.totales.citas }}</strong><span>Citas</span></article>
+        <article><mat-icon>medical_services</mat-icon><strong>{{ reporte.totales.profesionales }}</strong><span>Profesionales</span></article>
+        <article><mat-icon>reviews</mat-icon><strong>{{ reporte.totales.resenas }}</strong><span>Reseñas</span></article>
+        <article><mat-icon>star</mat-icon><strong>{{ reporte.totales.promedioGeneral | number: '1.1-1' }}</strong><span>Promedio general</span></article>
+      </div>
+
+      <mat-card class="report-card">
+        <header><div><span>Estados</span><h2>Citas por estado</h2></div><button mat-flat-button (click)="exportarEstado()"><mat-icon>picture_as_pdf</mat-icon>PDF</button></header>
+        <div class="table-wrap"><table><thead><tr><th>Estado</th><th>Cantidad</th><th>Porcentaje</th></tr></thead><tbody>
+          @for (item of reporte.citasPorEstado; track item.estado) {
+            <tr><td><span class="status">{{ item.estado }}</span></td><td>{{ item.total }}</td><td>{{ item.porcentaje | number: '1.1-1' }}%</td></tr>
+          } @empty { <tr><td colspan="3">No hay citas en este período.</td></tr> }
+        </tbody></table></div>
+      </mat-card>
+
+      <mat-card class="report-card">
+        <header><div><span>Profesionales</span><h2>Citas por profesional</h2></div><button mat-flat-button (click)="exportarProfesional()"><mat-icon>picture_as_pdf</mat-icon>PDF</button></header>
+        <div class="table-wrap"><table><thead><tr><th>Profesional</th><th>Total</th><th>Completadas</th><th>Finalización</th><th>Canceladas/rechazadas</th><th>Monto estimado</th></tr></thead><tbody>
+          @for (item of reporte.citasPorProfesional; track item.profesionalId) {
+            <tr><td>{{ item.profesional }}</td><td>{{ item.total }}</td><td>{{ item.completadas }}</td><td>{{ item.porcentajeFinalizacion | number: '1.1-1' }}%</td><td>{{ item.canceladas }}</td><td>{{ item.montoEstimado | currency: 'CRC':'symbol-narrow':'1.0-0' }}</td></tr>
+          } @empty { <tr><td colspan="6">No hay información profesional en este período.</td></tr> }
+        </tbody></table></div>
+      </mat-card>
+
+      <mat-card class="report-card">
+        <header><div><span>Experiencia</span><h2>Calificaciones</h2><p class="threshold-note">Baja calificación: promedio menor a {{ reporte.umbralBajaCalificacion }} de 5.</p></div><button mat-flat-button (click)="exportarCalificaciones()"><mat-icon>picture_as_pdf</mat-icon>PDF</button></header>
+        <div class="table-wrap"><table><thead><tr><th>Profesional</th><th>Promedio</th><th>Reseñas</th><th>Mejor servicio</th><th>Servicios con baja calificación</th><th>5★</th><th>4★</th><th>3★</th><th>2★</th><th>1★</th></tr></thead><tbody>
+          @for (item of reporte.calificaciones; track item.profesionalId) {
+            <tr>
+              <td>{{ item.profesional }}</td>
+              <td class="rating">{{ item.totalResenas ? '★ ' + (item.promedio | number: '1.1-1') : 'Sin reseñas' }}</td>
+              <td>{{ item.totalResenas }}</td>
+              <td>{{ item.mejoresServicios.length ? item.mejoresServicios.join(', ') : 'Sin datos' }}</td>
+              <td>
+                @for (servicio of item.serviciosBajaCalificacion; track servicio.nombre) {
+                  <span class="low-rating">{{ servicio.nombre }} ({{ servicio.promedio | number: '1.1-1' }})</span>
+                } @empty { <span class="good-rating">Ninguno</span> }
+              </td>
+              <td>{{ item.distribucion[5] }}</td><td>{{ item.distribucion[4] }}</td><td>{{ item.distribucion[3] }}</td><td>{{ item.distribucion[2] }}</td><td>{{ item.distribucion[1] }}</td>
+            </tr>
+          } @empty { <tr><td colspan="10">No hay profesionales para los filtros seleccionados.</td></tr> }
+        </tbody></table></div>
+      </mat-card>
+    }
+  </div>
+</section>

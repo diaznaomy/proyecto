@@ -1,0 +1,238 @@
+/*==================================================
+SERVICES
+==================================================*/
+
+.services{
+
+    padding:90px 24px 110px;
+
+    background:linear-gradient(
+        180deg,
+        #F5EDD4,
+        #F1E7C8
+    );
+
+}
+
+.services__title{
+
+    margin-bottom:34px;
+
+    font-family:"CMU Serif",serif;
+
+    font-size:58px;
+
+    font-weight:400;
+
+    color:#51361D;
+
+    margin-left: 20%;
+}
+
+/*==================================================
+GRID
+==================================================*/
+
+.services__grid{
+
+    max-width:1280px;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:16px;
+
+}
+
+/*==================================================
+CARD
+==================================================*/
+
+.card{
+
+    position:relative;
+
+    overflow:visible;
+
+    min-height:300px;
+
+    padding:56px 18px 20px;
+
+    border-radius:28px !important;
+
+    border:none !important;
+
+    box-shadow:
+        0 12px 28px rgba(81,54,29,.08);
+
+    transition:
+        transform .30s,
+        box-shadow .30s;
+
+}
+
+/* brillo */
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:inherit;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,.18),
+        transparent 45%
+    );
+
+    opacity:0;
+
+    transition:.35s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:
+        0 22px 45px rgba(81,54,29,.18);
+
+}
+
+.card:hover::before{
+
+    opacity:1;
+
+}
+
+/*==================================================
+ICONO
+==================================================*/
+
+.card__badge{
+
+    position:absolute;
+
+    top: 10px;
+
+    left:calc(50% + 52px);
+
+    transform:translateX(-50%);
+
+    width:42vh;
+
+    height:25vh;
+
+    transition:
+        transform .35s,
+        filter .35s;
+
+}
+
+.card:hover .card__badge{
+
+    transform:translateX(-50%) scale(1.08);
+
+    filter:drop-shadow(
+        0 12px 18px rgba(0,0,0,.22)
+    );
+
+}
+
+
+/*==================================================
+CONTENT
+==================================================*/
+
+mat-card-content{
+
+    padding:0 !important;
+
+    margin-top: 80px;
+
+}
+
+.card__title{
+
+    margin-bottom:12px;
+
+    font-family:"Glacial Indifference",sans-serif;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+.card__text{
+
+    font-family:"Glacial Indifference",sans-serif;
+
+    font-size:18px;
+
+    line-height:1.45;
+
+}
+
+/*==================================================
+COLORES
+==================================================*/
+
+.card--brown{
+    background:#6A4424;
+    color:white;
+}
+
+.card--rose{
+    background:#DA7D91;
+    color:white;
+}
+
+.card--sage{
+    background:#A0BBB2;
+    color:white;
+}
+
+.card--cream{
+    background:#F6FFFA;
+    color:#51361D;
+}
+
+/*==================================================
+RESPONSIVE
+==================================================*/
+
+@media(max-width:1000px){
+
+    .services__grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:700px){
+
+    .services{
+
+        padding:70px 18px;
+
+    }
+
+    .services__grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

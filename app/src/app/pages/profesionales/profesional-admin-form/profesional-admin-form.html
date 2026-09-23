@@ -1,0 +1,647 @@
+<section class="professional-form-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div class="hero-content">
+        <a
+          [routerLink]="rutaRegreso()"
+          class="back-link"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          {{ edicionPropia() ? 'Volver a mi perfil' : 'Volver a profesionales' }}
+        </a>
+
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>
+  {{
+    edicionPropia()
+      ? 'Mi perfil profesional'
+      : modoEdicion()
+      ? 'Editar profesional'
+      : 'Crear profesional'
+  }}
+</h1>
+
+<p>
+  {{
+    edicionPropia()
+      ? 'Actualiza tu disponibilidad, especialidades, imagen e información profesional.'
+      : modoEdicion()
+      ? 'Actualiza la información personal, profesional y de atención del profesional.'
+      : 'Registra la información personal, profesional y de atención del nuevo integrante de Serena.'
+  }}
+</p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>person_add</mat-icon>
+      </div>
+    </header>
+
+    <form
+      [formGroup]="formulario"
+      (ngSubmit)="guardar()"
+    >
+      <mat-card class="form-card">
+        <mat-card-content>
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon">
+                <mat-icon>person</mat-icon>
+              </div>
+
+              <div>
+                <span class="section-label">
+                  Información personal
+                </span>
+
+                <h2>Datos del profesional</h2>
+
+                <p>
+                  Información necesaria para identificar y contactar
+                  al profesional.
+                </p>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+              <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+
+                <input
+                  matInput
+                  formControlName="nombre"
+                  placeholder="Ejemplo: Sofía"
+                />
+
+                <mat-icon matSuffix>badge</mat-icon>
+
+                @if (campoInvalido('nombre')) {
+                  <mat-error>
+                    El nombre es obligatorio.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Apellidos</mat-label>
+
+                <input
+                  matInput
+                  formControlName="apellidos"
+                  placeholder="Ejemplo: Ramírez Mora"
+                />
+
+                <mat-icon matSuffix>badge</mat-icon>
+
+                @if (campoInvalido('apellidos')) {
+                  <mat-error>
+                    Los apellidos son obligatorios.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Correo electrónico</mat-label>
+
+                <input
+                  matInput
+                  type="email"
+                  formControlName="correo"
+                  placeholder="correo@ejemplo.com"
+                />
+
+                <mat-icon matSuffix>mail</mat-icon>
+
+                @if (
+                  formulario.controls.correo.hasError('required') &&
+                  campoInvalido('correo')
+                ) {
+                  <mat-error>
+                    El correo es obligatorio.
+                  </mat-error>
+                } @else if (
+                  formulario.controls.correo.hasError('email') &&
+                  campoInvalido('correo')
+                ) {
+                  <mat-error>
+                    Ingrese un correo válido.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Teléfono</mat-label>
+
+                <input
+                  matInput
+                  formControlName="telefono"
+                  placeholder="Ejemplo: 8888-8888"
+                />
+
+                <mat-icon matSuffix>phone</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+              >
+                <mat-label>Contraseña temporal</mat-label>
+
+                <input
+                  matInput
+                  [type]="mostrarPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Mínimo 6 caracteres"
+                />
+
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  (click)="alternarPassword()"
+                  [attr.aria-label]="
+                    mostrarPassword()
+                      ? 'Ocultar contraseña'
+                      : 'Mostrar contraseña'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      mostrarPassword()
+                        ? 'visibility_off'
+                        : 'visibility'
+                    }}
+                  </mat-icon>
+                </button>
+
+                @if (
+                  formulario.controls.password.hasError('required') &&
+                  campoInvalido('password')
+                ) {
+                  <mat-error>
+                    La contraseña es obligatoria.
+                  </mat-error>
+                } @else if (
+                  formulario.controls.password.hasError('minlength') &&
+                  campoInvalido('password')
+                ) {
+                  <mat-error>
+                    Debe tener al menos 6 caracteres.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon green-icon">
+                <mat-icon>workspace_premium</mat-icon>
+              </div>
+
+              <div>
+                <span class="section-label">
+                  Información profesional
+                </span>
+
+                <h2>Experiencia y presentación</h2>
+
+                <p>
+                  Datos que se mostrarán públicamente dentro del
+                  marketplace.
+                </p>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+              >
+                <mat-label>Título profesional</mat-label>
+
+                <input
+                  matInput
+                  formControlName="tituloProfesional"
+                  placeholder="Ejemplo: Psicóloga clínica"
+                />
+
+                <mat-icon matSuffix>school</mat-icon>
+
+                @if (
+                  formulario.controls.tituloProfesional.hasError('required') &&
+                  campoInvalido('tituloProfesional')
+                ) {
+                  <mat-error>
+                    El título profesional es obligatorio.
+                  </mat-error>
+                } @else if (
+                  formulario.controls.tituloProfesional.hasError('minlength') &&
+                  campoInvalido('tituloProfesional')
+                ) {
+                  <mat-error>
+                    Debe tener al menos 3 caracteres.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+              >
+                <mat-label>Descripción profesional</mat-label>
+
+                <textarea
+                  matInput
+                  formControlName="descripcion"
+                  rows="5"
+                  placeholder="Describa la experiencia, enfoque y servicios del profesional"
+                ></textarea>
+
+                <mat-hint align="end">
+                  Mínimo 10 caracteres
+                </mat-hint>
+
+                @if (
+                  formulario.controls.descripcion.hasError('required') &&
+                  campoInvalido('descripcion')
+                ) {
+                  <mat-error>
+                    La descripción es obligatoria.
+                  </mat-error>
+                } @else if (
+                  formulario.controls.descripcion.hasError('minlength') &&
+                  campoInvalido('descripcion')
+                ) {
+                  <mat-error>
+                    Debe tener al menos 10 caracteres.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Años de experiencia</mat-label>
+
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  step="1"
+                  formControlName="aniosExperiencia"
+                />
+
+                <mat-icon matSuffix>timeline</mat-icon>
+
+                @if (
+                  campoInvalido('aniosExperiencia')
+                ) {
+                  <mat-error>
+                    Ingrese una experiencia válida.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Tarifa base</mat-label>
+
+                <span matTextPrefix>₡&nbsp;</span>
+
+                <input
+                  matInput
+                  type="number"
+                  min="1"
+                  step="100"
+                  formControlName="tarifaBase"
+                  placeholder="35000"
+                />
+
+                <mat-icon matSuffix>payments</mat-icon>
+
+                @if (
+                  formulario.controls.tarifaBase.hasError('required') &&
+                  campoInvalido('tarifaBase')
+                ) {
+                  <mat-error>
+                    La tarifa es obligatoria.
+                  </mat-error>
+                } @else if (
+                  formulario.controls.tarifaBase.hasError('min') &&
+                  campoInvalido('tarifaBase')
+                ) {
+                  <mat-error>
+                    La tarifa debe ser mayor que cero.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Especialidades</mat-label>
+                <mat-select
+                  formControlName="especialidadIds"
+                  multiple
+                  [disabled]="cargandoEspecialidades()"
+                >
+                  @for (especialidad of especialidades(); track especialidad.id) {
+                    <mat-option [value]="especialidad.id">
+                      {{ especialidad.nombre }} ·
+                      {{ especialidad.tipoEspecialidad.nombre }}
+                    </mat-option>
+                  }
+                </mat-select>
+                <mat-icon matSuffix>psychology</mat-icon>
+                <mat-hint>Seleccione una o varias especialidades activas.</mat-hint>
+
+                @if (campoInvalido('especialidadIds')) {
+                  <mat-error>Seleccione al menos una especialidad.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon location-icon">
+                <mat-icon>location_on</mat-icon>
+              </div>
+
+              <div>
+                <span class="section-label">
+                  Atención
+                </span>
+
+                <h2>Modalidad y ubicación</h2>
+
+                <p>
+                  Selecciona cómo y dónde brindará sus servicios.
+                </p>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+              <mat-form-field appearance="outline">
+                <mat-label>Modalidad</mat-label>
+
+                <mat-select formControlName="modalidad">
+                  <mat-option value="Virtual">
+                    <mat-icon>videocam</mat-icon>
+                    Virtual
+                  </mat-option>
+
+                  <mat-option value="Presencial">
+                    <mat-icon>location_on</mat-icon>
+                    Presencial
+                  </mat-option>
+                </mat-select>
+
+                @if (campoInvalido('modalidad')) {
+                  <mat-error>
+                    Seleccione una modalidad.
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              @if (
+                formulario.controls.modalidad.value ===
+                'Presencial'
+              ) {
+                <mat-form-field appearance="outline">
+                  <mat-label>Ubicación</mat-label>
+
+                  <mat-select
+                    formControlName="ubicacionId"
+                    [disabled]="cargandoUbicaciones()"
+                  >
+                    @for (
+                      ubicacion of ubicacionesPresenciales();
+                      track ubicacion.id
+                    ) {
+                      <mat-option [value]="ubicacion.id">
+                        {{
+                          obtenerTextoUbicacion(ubicacion)
+                        }}
+                      </mat-option>
+                    }
+                  </mat-select>
+
+                  @if (campoInvalido('ubicacionId')) {
+                    <mat-error>
+                      Seleccione una ubicación.
+                    </mat-error>
+                  }
+                </mat-form-field>
+              } @else if (
+                formulario.controls.modalidad.value ===
+                'Virtual'
+              ) {
+                <div class="virtual-location">
+                  <div class="virtual-icon">
+                    <mat-icon>videocam</mat-icon>
+                  </div>
+
+                  <div>
+                    <strong>Atención virtual</strong>
+
+                    <span>
+                      La ubicación Virtual se seleccionará
+                      automáticamente.
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon image-icon">
+                <mat-icon>image</mat-icon>
+              </div>
+
+              <div>
+                <span class="section-label">
+                  Perfil público
+                </span>
+
+                <h2>Imagen y disponibilidad</h2>
+
+                <p>
+                  Configura la imagen que se mostrará y si acepta
+                  nuevas citas.
+                </p>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+             <div class="image-upload full-width">
+  <input
+    #imageInput
+    type="file"
+    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+    hidden
+    (change)="seleccionarImagen($event)"
+  />
+
+  <div class="image-preview">
+    @if (imagenPreview() || imagenActual(); as imagenPerfil) {
+      <img
+        [src]="imagenPerfil"
+        alt="Previsualización del perfil"
+      />
+    } @else {
+      <div class="image-placeholder">
+        <mat-icon>person</mat-icon>
+      </div>
+    }
+  </div>
+
+  <div class="image-upload-content">
+    <strong>
+      Imagen de perfil
+    </strong>
+
+    <p>
+      Selecciona una fotografía JPG,
+      PNG o WEBP. El tamaño máximo
+      permitido es de 5 MB.
+    </p>
+
+    @if (imagenSeleccionada()) {
+      <span class="selected-file">
+        <mat-icon>
+          check_circle
+        </mat-icon>
+
+        {{
+          imagenSeleccionada()?.name
+        }}
+      </span>
+    }
+
+    @if (errorImagen()) {
+      <span class="image-error">
+        <mat-icon>
+          error
+        </mat-icon>
+
+        {{ errorImagen() }}
+      </span>
+    }
+
+    <div class="image-actions">
+      <button
+        mat-stroked-button
+        type="button"
+        class="select-image-button"
+        (click)="imageInput.click()"
+      >
+        <mat-icon>
+          upload
+        </mat-icon>
+
+        {{
+          imagenSeleccionada()
+            ? 'Cambiar imagen'
+            : 'Seleccionar imagen'
+        }}
+      </button>
+
+      @if (imagenSeleccionada()) {
+        <button
+          mat-button
+          type="button"
+          class="remove-image-button"
+          (click)="
+            eliminarImagen(
+              imageInput
+            )
+          "
+        >
+          <mat-icon>
+            delete_outline
+          </mat-icon>
+
+          Quitar
+        </button>
+      }
+    </div>
+  </div>
+</div>
+         
+
+              <div class="availability-control full-width">
+                <div class="availability-text">
+                  <div class="availability-icon">
+                    <mat-icon>event_available</mat-icon>
+                  </div>
+
+                  <div>
+                    <strong>
+                      Disponibilidad para citas
+                    </strong>
+
+                    <span>
+                      Indica si el profesional acepta nuevas citas
+                      actualmente.
+                    </span>
+                  </div>
+                </div>
+
+                <mat-checkbox
+                  formControlName="disponible"
+                >
+                  Disponible
+                </mat-checkbox>
+              </div>
+            </div>
+          </section>
+        </mat-card-content>
+
+        <mat-card-actions class="form-actions">
+          <button
+            mat-stroked-button
+            type="button"
+            class="cancel-button"
+            [disabled]="guardando()"
+            (click)="cancelar()"
+          >
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+
+         <button
+  mat-flat-button
+  type="submit"
+  class="save-button"
+  [disabled]="guardando()"
+>
+  <mat-icon>
+    {{ guardando() ? 'hourglass_top' : 'save' }}
+  </mat-icon>
+
+  {{
+    guardando()
+      ? 'Guardando...'
+      : modoEdicion()
+        ? 'Guardar cambios'
+        : 'Crear profesional'
+  }}
+</button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</section>

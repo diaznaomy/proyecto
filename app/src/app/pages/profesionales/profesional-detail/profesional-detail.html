@@ -1,0 +1,206 @@
+<section class="detail-page">
+  @if (cargando()) {
+    <div class="state">
+      <mat-icon>hourglass_top</mat-icon>
+      <p>Cargando información...</p>
+    </div>
+  } @else if (perfil(); as profesional) {
+    <mat-card class="detail-card">
+      <div class="profile-header">
+        <img
+          [src]="imagenUrl(profesional)"
+          [alt]="profesional.usuario.nombre + ' ' + profesional.usuario.apellidos"
+        />
+
+        <div class="profile-main">
+          <span class="label"> Perfil profesional </span>
+
+          <h1>
+            {{ profesional.usuario.nombre }}
+            {{ profesional.usuario.apellidos }}
+          </h1>
+
+          <h2>
+            {{ profesional.tituloProfesional }}
+          </h2>
+
+          <div class="badges">
+            <span class="badge">
+              <mat-icon>
+                {{ modalidad(profesional) === 'Virtual' ? 'videocam' : 'location_on' }}
+              </mat-icon>
+
+              {{ modalidad(profesional) }}
+            </span>
+
+            <span class="badge" [class.unavailable]="!profesional.disponible">
+              <mat-icon>event_available</mat-icon>
+
+              {{ profesional.disponible ? 'Disponible' : 'No disponible' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="header-actions">
+            @if (esCliente()) {
+              <button
+                mat-stroked-button
+                type="button"
+                class="detail-favorite-button"
+                [class.is-favorite]="esFavorito(profesional.id)"
+                (click)="toggleFavorito(profesional)"
+              >
+                <mat-icon>{{
+                  esFavorito(profesional.id) ? 'favorite' : 'favorite_border'
+                }}</mat-icon>
+                <span>{{
+                  esFavorito(profesional.id) ? 'En favoritos' : 'Guardar en favoritos'
+                }}</span>
+              </button>
+            }
+
+            @if (puedeEditar()) {
+              <button mat-flat-button class="edit-button" (click)="editar(profesional)">
+                <mat-icon>edit</mat-icon>
+                Editar
+              </button>
+            }
+          </div>
+
+          @if (puedeEditar()) {
+            <button mat-flat-button class="edit-button" (click)="editar(profesional)">
+              <mat-icon>edit</mat-icon>
+              Editar
+            </button>
+          }
+        </div>
+      </div>
+
+      <mat-card-content>
+        <div class="content-grid">
+          <section class="information-section">
+            <h3>Descripción profesional</h3>
+
+            <p>
+              {{ profesional.descripcion }}
+            </p>
+          </section>
+
+          <section class="information-section">
+            <h3>Información de contacto</h3>
+
+            <div class="info-row">
+              <mat-icon>mail</mat-icon>
+              <span>{{ profesional.usuario.correo }}</span>
+            </div>
+
+            <div class="info-row">
+              <mat-icon>phone</mat-icon>
+              <span>
+                {{ profesional.usuario.telefono || 'Sin teléfono registrado' }}
+              </span>
+            </div>
+          </section>
+
+          <section class="information-section">
+            <h3>Experiencia y tarifa</h3>
+
+            <div class="info-row">
+              <mat-icon>workspace_premium</mat-icon>
+
+              <span>
+                {{ profesional.aniosExperiencia }}
+                años de experiencia
+              </span>
+            </div>
+
+            <div class="info-row">
+              <mat-icon>payments</mat-icon>
+
+              <span>
+                {{ profesional.tarifaBase | currency: 'CRC' : 'symbol-narrow' : '1.0-0' }}
+              </span>
+            </div>
+          </section>
+
+          <section class="information-section">
+            <h3>Ubicación</h3>
+
+            <div class="info-row">
+              <mat-icon>location_on</mat-icon>
+
+              <span>
+                {{ profesional.ubicacion.distrito }}, {{ profesional.ubicacion.canton }},
+                {{ profesional.ubicacion.provincia }}
+              </span>
+            </div>
+          </section>
+
+          <section class="information-section full-width">
+            <h3>Especialidades</h3>
+
+            <div class="specialties">
+              @for (relacion of profesional.especialidades; track relacion.especialidad.id) {
+                <span>
+                  {{ relacion.especialidad.nombre }}
+                </span>
+              } @empty {
+                <p>No hay especialidades asociadas.</p>
+              }
+            </div>
+          </section>
+
+          <section class="information-section full-width reviews-section">
+            <div class="reviews-heading">
+              <div>
+                <h3>Reseñas de clientes</h3>
+                <p>{{ resumenResenas().total }} reseñas verificadas</p>
+              </div>
+              <div class="rating-summary">
+                <strong>{{ resumenResenas().promedio | number: '1.1-1' }}</strong>
+                <div class="review-stars">
+                  @for (activa of estrellas(resumenResenas().promedio); track $index) {
+                    <mat-icon [class.active]="activa">star</mat-icon>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="reviews-list">
+              @for (resena of resumenResenas().resenas; track resena.id) {
+                <article class="review-item">
+                  <div class="review-meta">
+                    <strong>{{ resena.cliente.nombre }} {{ resena.cliente.apellidos }}</strong>
+                    <span>{{ resena.fechaResena | date: 'dd/MM/yyyy' }}</span>
+                  </div>
+                  <div class="review-stars">
+                    @for (activa of estrellas(resena.puntuacion); track $index) {
+                      <mat-icon [class.active]="activa">star</mat-icon>
+                    }
+                  </div>
+                  <small>{{ resena.cita.servicio.nombre }}</small>
+                  <p>{{ resena.comentario || 'Sin comentario adicional.' }}</p>
+                </article>
+              } @empty {
+                <p>Este profesional aún no tiene reseñas.</p>
+              }
+            </div>
+          </section>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-stroked-button (click)="volver()">
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  } @else {
+    <div class="state">
+      <mat-icon>person_off</mat-icon>
+      <p>Profesional no encontrado.</p>
+    </div>
+  }
+</section>

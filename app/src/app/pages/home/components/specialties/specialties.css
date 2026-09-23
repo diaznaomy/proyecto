@@ -1,0 +1,209 @@
+.specialties {
+    padding: 90px 24px 110px;
+
+    background: linear-gradient(
+        180deg,
+        #F1E7C8,
+        #F5EDD4
+    );
+}
+
+/*==========================
+TITULO
+==========================*/
+
+.specialties__title {
+
+    text-align: center;
+
+    margin: 0 0 55px;
+
+    font-family: "CMU Serif", serif;
+
+    font-size: 58px;
+
+    font-weight: 400;
+
+    color: #51361D;
+
+}
+
+/*==========================
+CONTENEDOR
+==========================*/
+
+.specialties__row {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 35px;
+
+}
+
+/*==========================
+LISTAS
+==========================*/
+
+.specialties__list {
+
+    list-style: none;
+
+    margin: 0;
+
+    padding: 0;
+
+    width: 220px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+    font-family: "Glacial Indifference", sans-serif;
+
+    font-size: 18px;
+
+    line-height: 1.45;
+
+    color: #51361D;
+
+}
+
+.specialties__list--left {
+
+    text-align: right;
+
+}
+
+.specialties__list--right {
+
+    text-align: left;
+
+}
+
+/*==========================
+ILUSTRACION
+==========================*/
+
+.specialties__illustration {
+
+    width: 430px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-shrink: 0;
+
+}
+
+.specialties__illustration img{
+
+    width:100%;
+
+    height:auto;
+
+    transition:.4s;
+
+}
+
+.specialties__illustration:hover img{
+
+    transform:scale(1.03);
+
+    filter:drop-shadow(
+        0 12px 20px rgba(81,54,29,.18)
+    );
+
+}
+
+/* Si todavía usas el frame */
+
+.specialties__illustration-frame{
+
+    width:100%;
+
+    height:auto;
+
+    object-fit:contain;
+
+}
+
+/* Oculta el placeholder */
+
+.specialties__illustration-placeholder{
+
+    display:none;
+
+}
+
+/*==========================
+RESPONSIVE
+==========================*/
+
+@media (max-width:900px){
+
+    .specialties__row{
+
+        flex-direction:column;
+
+        gap:35px;
+
+    }
+
+    .specialties__list{
+
+        width:auto;
+
+        text-align:center !important;
+
+    }
+
+    .specialties__illustration{
+
+    width:200vh;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.specialties__illustration-frame{
+
+    position:static;
+
+    width:100%;
+
+    height:auto;
+
+    object-fit:contain;
+
+    opacity:1;
+
+    display:block;
+
+}
+
+    .specialties__title{
+
+        font-size:42px;
+
+    }
+
+}

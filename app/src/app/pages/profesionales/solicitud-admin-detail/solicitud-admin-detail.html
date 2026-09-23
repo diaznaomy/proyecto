@@ -1,0 +1,201 @@
+<section class="professional-form-page">
+  <div class="page-decoration decoration-one"></div>
+  <div class="page-decoration decoration-two"></div>
+
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div class="hero-content">
+        <button
+          type="button"
+          class="back-link"
+          (click)="volver()"
+          style="background: none; border: none; cursor: pointer;"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          Volver a solicitudes
+        </button>
+
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Detalle de la solicitud</h1>
+        <p>Revisa la información enviada antes de aprobar o rechazar.</p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>fact_check</mat-icon>
+      </div>
+    </header>
+
+    @if (cargando()) {
+      <mat-card class="form-card">
+        <mat-card-content>
+          <div class="state-container">
+            <div class="state-icon loading-icon">
+              <mat-icon>spa</mat-icon>
+            </div>
+            <h3>Cargando solicitud</h3>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    } @else if (solicitud(); as solicitud) {
+      <mat-card class="form-card">
+        <mat-card-content>
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div>
+                <span class="section-label">Información personal</span>
+                <h2>{{ obtenerNombreCompleto() }}</h2>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+              <p><strong>Correo:</strong> {{ solicitud.usuario.correo }}</p>
+              <p><strong>Teléfono:</strong> {{ solicitud.usuario.telefono || 'No indicado' }}</p>
+              <p><strong>Fecha de solicitud:</strong> {{ solicitud.fechaSolicitud | date: 'dd/MM/yyyy HH:mm' }}</p>
+              <p><strong>Estado:</strong> {{ solicitud.estado }}</p>
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon green-icon">
+                <mat-icon>workspace_premium</mat-icon>
+              </div>
+              <div>
+                <span class="section-label">Información profesional</span>
+                <h2>Experiencia y presentación</h2>
+              </div>
+            </div>
+
+            <div class="form-grid two-columns">
+              <p class="full-width"><strong>Título profesional:</strong> {{ solicitud.tituloProfesional }}</p>
+              <p class="full-width"><strong>Descripción:</strong> {{ solicitud.descripcion }}</p>
+              <p><strong>Años de experiencia:</strong> {{ solicitud.aniosExperiencia }}</p>
+              <p><strong>Tarifa base:</strong> {{ solicitud.tarifaBase | currency: 'CRC' : 'symbol-narrow' : '1.0-0' }}</p>
+              <p><strong>Ubicación:</strong> {{ obtenerTextoUbicacion() }}</p>
+              <p class="full-width">
+                <strong>Especialidades:</strong>
+                @for (item of solicitud.especialidades; track item.especialidad.id) {
+                  <span class="modality-badge modality-presencial">{{ item.especialidad.nombre }}</span>
+                }
+              </p>
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <div class="section-icon image-icon">
+                <mat-icon>description</mat-icon>
+              </div>
+              <div>
+                <span class="section-label">Credenciales del profesional</span>
+                <h2>Documento adjunto</h2>
+              </div>
+            </div>
+
+            <button mat-stroked-button type="button" (click)="descargarCredencial()">
+              <mat-icon>picture_as_pdf</mat-icon>
+              Ver / descargar PDF de credenciales
+            </button>
+          </section>
+
+          @if (solicitud.estado === 'Pendiente') {
+            <div class="section-divider"></div>
+
+            <section class="form-section">
+              <div class="section-heading">
+                <div class="section-icon">
+                  <mat-icon>gavel</mat-icon>
+                </div>
+                <div>
+                  <span class="section-label">Resolución</span>
+                  <h2>Acciones</h2>
+                </div>
+              </div>
+
+              @if (!mostrandoFormularioRechazo()) {
+                <div class="form-actions" style="justify-content: flex-start;">
+                  <button
+                    mat-flat-button
+                    type="button"
+                    class="save-button"
+                    [disabled]="procesando()"
+                    (click)="aprobar()"
+                  >
+                    <mat-icon>check_circle</mat-icon>
+                    Aprobar solicitud
+                  </button>
+
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    class="cancel-button"
+                    [disabled]="procesando()"
+                    (click)="mostrarFormularioRechazo()"
+                  >
+                    <mat-icon>cancel</mat-icon>
+                    Rechazar solicitud
+                  </button>
+                </div>
+              } @else {
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Motivo de rechazo</mat-label>
+                  <textarea
+                    matInput
+                    rows="4"
+                    [(ngModel)]="motivoRechazo"
+                    placeholder="Explica por qué se rechaza la solicitud (mínimo 10 caracteres)"
+                  ></textarea>
+                </mat-form-field>
+
+                <div class="form-actions" style="justify-content: flex-start;">
+                  <button
+                    mat-flat-button
+                    type="button"
+                    class="save-button"
+                    [disabled]="procesando()"
+                    (click)="confirmarRechazo()"
+                  >
+                    <mat-icon>send</mat-icon>
+                    Confirmar rechazo
+                  </button>
+
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    class="cancel-button"
+                    [disabled]="procesando()"
+                    (click)="cancelarRechazo()"
+                  >
+                    <mat-icon>close</mat-icon>
+                    Cancelar
+                  </button>
+                </div>
+              }
+            </section>
+          } @else {
+            <div class="section-divider"></div>
+
+            <section class="form-section">
+              <p><strong>Resuelta por:</strong> {{ solicitud.resueltoPor?.nombre }} {{ solicitud.resueltoPor?.apellidos }}</p>
+              <p><strong>Fecha de resolución:</strong> {{ solicitud.fechaResolucion | date: 'dd/MM/yyyy HH:mm' }}</p>
+              @if (solicitud.motivoRechazo) {
+                <p><strong>Motivo de rechazo:</strong> {{ solicitud.motivoRechazo }}</p>
+              }
+            </section>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</section>

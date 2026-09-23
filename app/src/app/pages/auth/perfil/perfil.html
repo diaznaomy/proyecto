@@ -1,0 +1,104 @@
+<section class="perfil-page">
+  @if (usuario(); as u) {
+    <div class="perfil-card">
+
+      <img src="/assets/uploads/shared/SecondarySerena.png" alt="Serena" class="auth-logo-icon" />
+      <img src="/assets/uploads/shared/LogoSerena.png" alt="Serena" class="auth-logo-text" />
+
+      <header class="perfil-header">
+        <div>
+          <h1>Mi perfil</h1>
+          <p class="auth-subtitle">Consulta y edita tu información</p>
+        </div>
+        <button type="button" class="boton-secundario" (click)="cerrarSesion()">Cerrar sesión</button>
+      </header>
+
+      @if (guardadoOk()) {
+        <div class="perfil-aviso">Tu perfil se actualizó correctamente.</div>
+      }
+      @if (error()) {
+        <div class="perfil-error">{{ error() }}</div>
+      }
+
+      @if (!editando()) {
+        <dl class="perfil-datos">
+          <div>
+            <dt>Nombre completo</dt>
+            <dd>{{ u.nombre }} {{ u.apellidos }}</dd>
+          </div>
+          <div>
+            <dt>Correo</dt>
+            <dd>{{ u.correo }}</dd>
+          </div>
+          <div>
+            <dt>Teléfono</dt>
+            <dd>{{ u.telefono || '—' }}</dd>
+          </div>
+          <div>
+            <dt>Rol</dt>
+            <dd>{{ nombreRol() }}</dd>
+          </div>
+        </dl>
+
+        <button type="button" class="boton-primario" (click)="activarEdicion()">
+          <span class="boton-sparkle">✦</span>
+          Editar perfil
+          <span class="boton-sparkle">✦</span>
+        </button>
+      } @else {
+        <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+          <div class="campo">
+            <div class="campo-input-wrapper">
+              <span class="campo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/>
+                </svg>
+              </span>
+              <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre" />
+            </div>
+            @if (formulario.controls.nombre.invalid && formulario.controls.nombre.touched) {
+              <span class="campo-error">El nombre es obligatorio.</span>
+            }
+          </div>
+
+          <div class="campo">
+            <div class="campo-input-wrapper">
+              <span class="campo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/>
+                </svg>
+              </span>
+              <input id="apellidos" type="text" formControlName="apellidos" placeholder="Apellidos" />
+            </div>
+            @if (formulario.controls.apellidos.invalid && formulario.controls.apellidos.touched) {
+              <span class="campo-error">Los apellidos son obligatorios.</span>
+            }
+          </div>
+
+          <div class="campo">
+            <div class="campo-input-wrapper">
+              <span class="campo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M6.6 10.8c1.3 2.6 3.4 4.7 6 6l2-2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.4 21 3 13.6 3 4.8c0-.6.4-1 1-1h3.8c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2 2.4Z"/>
+                </svg>
+              </span>
+              <input id="telefono" type="text" formControlName="telefono" placeholder="Teléfono" />
+            </div>
+          </div>
+
+          <div class="perfil-acciones">
+            <button type="button" class="boton-secundario" (click)="cancelarEdicion()">Cancelar</button>
+            <button type="submit" class="boton-primario" [disabled]="guardando()">
+              <span class="boton-sparkle">✦</span>
+              {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+              <span class="boton-sparkle">✦</span>
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  }
+</section>

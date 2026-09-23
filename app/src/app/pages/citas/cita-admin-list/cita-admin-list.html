@@ -1,0 +1,315 @@
+<section class="citas-page">
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <div>
+        <span class="hero-label">
+          <mat-icon>spa</mat-icon>
+          Serena
+        </span>
+
+        <h1>Gestión de citas</h1>
+
+        <p>
+          Consulta las citas programadas y combina
+          filtros para encontrar rápidamente la
+          información necesaria.
+        </p>
+      </div>
+
+      <div class="hero-icon">
+        <mat-icon>event_note</mat-icon>
+      </div>
+    </header>
+
+    <mat-card class="page-card">
+      <mat-card-content>
+        <div class="section-heading">
+          <div>
+            <span class="section-label">
+              Administración
+            </span>
+
+            <h2>Citas registradas</h2>
+
+            <p>
+              Revisa el cliente, profesional,
+              servicio, horario y estado.
+            </p>
+          </div>
+
+          <div class="heading-actions">
+            <div class="total-badge">
+              <mat-icon>calendar_month</mat-icon>
+
+              <span>
+                {{ citasFiltradas().length }}
+                citas
+              </span>
+            </div>
+
+            @if (puedeCrearCita()) {
+              <button
+                mat-flat-button
+                type="button"
+                class="create-button"
+                (click)="crearCita()"
+              >
+                <mat-icon>add</mat-icon>
+                Nueva cita
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters">
+          <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+
+            <mat-select [(ngModel)]="filtroEstado">
+              <mat-option value="">
+                Todos
+              </mat-option>
+
+              @for (
+                estado of estados();
+                track estado.id
+              ) {
+                <mat-option
+                  [value]="estado.id.toString()"
+                >
+                  {{ estado.nombre }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Profesional</mat-label>
+
+            <mat-select
+              [(ngModel)]="filtroProfesional"
+            >
+              <mat-option value="">
+                Todos
+              </mat-option>
+
+              @for (
+                profesional of profesionales();
+                track profesional.id
+              ) {
+                <mat-option
+                  [value]="profesional.id.toString()"
+                >
+                  {{
+                    obtenerNombreProfesionalFiltro(
+                      profesional
+                    )
+                  }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+         <mat-form-field appearance="outline">
+  <mat-label>Fecha desde</mat-label>
+
+  <input
+    matInput
+    [matDatepicker]="pickerDesde"
+    [(ngModel)]="fechaDesde"
+    readonly
+  />
+
+  <mat-datepicker-toggle
+    matIconSuffix
+    [for]="pickerDesde"
+  ></mat-datepicker-toggle>
+
+  <mat-datepicker
+    #pickerDesde
+  ></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field appearance="outline">
+  <mat-label>Fecha hasta</mat-label>
+
+  <input
+    matInput
+    [matDatepicker]="pickerHasta"
+    [(ngModel)]="fechaHasta"
+    [min]="fechaDesde"
+    readonly
+  />
+
+  <mat-datepicker-toggle
+    matIconSuffix
+    [for]="pickerHasta"
+  ></mat-datepicker-toggle>
+
+  <mat-datepicker
+    #pickerHasta
+  ></mat-datepicker>
+</mat-form-field>
+
+          <button
+            mat-stroked-button
+            type="button"
+            class="clear-button"
+            (click)="limpiarFiltros()"
+          >
+            <mat-icon>filter_alt_off</mat-icon>
+            Limpiar
+          </button>
+        </div>
+
+        @if (cargando()) {
+          <div class="state-container">
+            <mat-icon>hourglass_top</mat-icon>
+            <h3>Cargando citas</h3>
+          </div>
+        } @else if (citasFiltradas().length === 0) {
+          <div class="state-container">
+            <mat-icon>event_busy</mat-icon>
+
+            <h3>No se encontraron citas</h3>
+
+            <p>
+              Cambia los filtros o registra una
+              nueva cita.
+            </p>
+          </div>
+        } @else {
+          <div class="table-container">
+            <table
+              mat-table
+              [dataSource]="citasFiltradas()"
+              class="citas-table"
+            >
+              <ng-container matColumnDef="cliente">
+                <th mat-header-cell *matHeaderCellDef>
+                  Cliente
+                </th>
+
+                <td mat-cell *matCellDef="let cita">
+                  <strong>
+                    {{ obtenerNombreCliente(cita) }}
+                  </strong>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="profesional">
+                <th mat-header-cell *matHeaderCellDef>
+                  Profesional
+                </th>
+
+                <td mat-cell *matCellDef="let cita">
+                  <div class="person-cell">
+                    <strong>
+                      {{
+                        obtenerNombreProfesional(
+                          cita
+                        )
+                      }}
+                    </strong>
+
+                    <small>
+                      {{
+                        cita.profesional
+                          .tituloProfesional
+                      }}
+                    </small>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="servicio">
+                <th mat-header-cell *matHeaderCellDef>
+                  Servicio
+                </th>
+
+                <td mat-cell *matCellDef="let cita">
+                  {{ cita.servicio.nombre }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef>
+                  Fecha
+                </th>
+
+                <td mat-cell *matCellDef="let cita">
+                  {{
+                    cita.fechaCita
+                      | date: 'dd/MM/yyyy'
+                  }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="hora">
+                <th mat-header-cell *matHeaderCellDef>
+                  Hora
+                </th>
+
+                <td mat-cell *matCellDef="let cita">
+                  {{
+                    obtenerHoraLocal(
+                      cita.horaInicio
+                    )
+                  }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>
+                  Estado
+                </th>
+
+                <td mat-cell *matCellDef="let cita">
+                  <span
+                    class="status-badge"
+                    [attr.data-status]="
+                      cita.estadoCita.nombre
+                        .toLowerCase()
+                    "
+                  >
+                    {{ cita.estadoCita.nombre }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>
+                  Acciones
+                </th>
+
+                <td mat-cell *matCellDef="let cita">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="view-button"
+                    (click)="verDetalle(cita)"
+                  >
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="columnas"
+              ></tr>
+
+              <tr
+                mat-row
+                *matRowDef="
+                  let row;
+                  columns: columnas
+                "
+              ></tr>
+            </table>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>

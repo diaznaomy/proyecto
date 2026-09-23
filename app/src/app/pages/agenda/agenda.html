@@ -1,0 +1,257 @@
+<div class="agenda-page">
+  <main class="agenda-content">
+    <header class="agenda-header">
+      <div>
+        <span class="eyebrow">AGENDA</span>
+
+        <h1>
+          Buenos días, <span>{{ usuario()?.nombre || 'Usuario' }}</span> 🌷
+        </h1>
+
+        <p>Gestiona tus citas y mantén tu agenda organizada.</p>
+      </div>
+
+      <div class="header-actions">
+        <div class="user-avatar">
+          {{ (usuario()?.nombre || 'U').charAt(0).toUpperCase() }}
+        </div>
+      </div>
+    </header>
+
+    <section class="summary-cards">
+      <article class="summary-card pink">
+        <div class="summary-icon">📅</div>
+
+        <div>
+          <span>Citas de hoy</span>
+          <strong>{{ citasHoy() }}</strong>
+        </div>
+      </article>
+
+      <article class="summary-card green">
+        <div class="summary-icon">✓</div>
+
+        <div>
+          <span>Confirmadas</span>
+          <strong>{{ citasConfirmadas() }}</strong>
+        </div>
+      </article>
+
+      <article class="summary-card cream">
+        <div class="summary-icon">⏳</div>
+
+        <div>
+          <span>Pendientes</span>
+          <strong>{{ citasPendientes() }}</strong>
+        </div>
+      </article>
+    </section>
+
+    <section
+      class="agenda-layout"
+      *ngIf="esProfesional() || esAdministrador(); else historialCliente"
+    >
+      <div class="calendar-card">
+        <div class="card-header">
+          <div>
+            <span class="section-label">AGENDA VISUAL</span>
+            <h2>{{ esAdministrador() ? 'Agenda general' : 'Mi agenda' }}</h2>
+          </div>
+
+          <button class="add-button">+ Nueva cita</button>
+        </div>
+
+        <div class="agenda-filters" *ngIf="esAdministrador() || esProfesional()">
+          <label>
+            <span>Estado</span>
+            <select [value]="filtroEstado()" (change)="onEstadoChange($any($event.target).value)">
+              <option value="">Todos</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="aceptada">Aceptada</option>
+              <option value="cancelada">Cancelada</option>
+              <option value="completada">Completada</option>
+            </select>
+          </label>
+
+          <label *ngIf="esAdministrador()">
+            <span>Profesional</span>
+            <select
+              [value]="filtroProfesional()"
+              (change)="onProfesionalChange($any($event.target).value)"
+            >
+              <option value="">Todos</option>
+              <option
+                *ngFor="let profesional of profesionalesDisponibles()"
+                [value]="profesional.id"
+              >
+                {{ profesional.nombre }}
+              </option>
+            </select>
+          </label>
+
+          <label>
+            <span>Fecha</span>
+            <input
+              type="date"
+              [value]="filtroFecha()"
+              (input)="onFechaChange($any($event.target).value)"
+            />
+          </label>
+
+          <button class="clear-button" type="button" (click)="resetFiltros()">Limpiar</button>
+        </div>
+
+        <div class="calendar-wrapper">
+          <div *ngIf="cargando()" class="calendar-loading">Cargando agenda...</div>
+          <div *ngIf="error()" class="calendar-error">{{ error() }}</div>
+          <div *ngIf="!cargando() && !error() && citasFiltradas().length === 0" class="empty-state">
+            No hay citas para este filtro.
+          </div>
+          <full-calendar
+            *ngIf="!cargando() && !error() && citasFiltradas().length > 0"
+            [options]="calendarOptions"
+          ></full-calendar>
+        </div>
+      </div>
+
+      <aside class="agenda-sidebar">
+        <div class="side-card">
+          <div class="side-card-header">
+            <div>
+              <span class="section-label">HOY</span>
+              <h3>{{ fechaHoyTexto }}</h3>
+            </div>
+
+            <span class="today-dot"></span>
+          </div>
+
+          <div class="today-progress">
+            <strong>{{ citasHoy() }}</strong>
+            <span>citas programadas</span>
+          </div>
+        </div>
+
+        <div class="side-card upcoming">
+          <div class="side-card-header">
+            <div>
+              <span class="section-label">PRÓXIMAS</span>
+              <h3>Citas próximas</h3>
+            </div>
+
+            <button>Ver todas</button>
+          </div>
+
+          <div class="appointment" *ngFor="let cita of proximasCitas()">
+            <div class="appointment-time">
+              {{ formatearHora(cita.horaInicio) }}
+            </div>
+
+            <div class="appointment-client">
+              {{ obtenerNombreCliente(cita) }}
+            </div>
+
+            <div class="appointment-info">
+              <strong>{{ obtenerNombreCliente(cita) }}</strong>
+              <span>{{ cita.servicio.nombre }}</span>
+            </div>
+
+            <span class="status" [ngClass]="claseEstado(estadoNombre(cita))">
+              {{ estadoNombre(cita) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="side-card legend-card">
+          <span class="section-label">ESTADOS</span>
+
+          <div class="legend-item">
+            <span class="legend-dot pending-dot"></span>
+            Pendiente
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot confirmed-dot"></span>
+            Confirmada
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot cancelled-dot"></span>
+            Cancelada
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot completed-dot"></span>
+            Completada
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Dashboard de profesional: edades, visitas por mes, tipos de servicio,
+         estado de citas, lista de pacientes con detalle y resumen por especialidad -->
+    <app-doctor-dashboard *ngIf="esProfesional()" [citas]="citasFiltradas()"></app-doctor-dashboard>
+
+    <!-- Dashboard de administrador: KPIs de plataforma, citas por estado,
+         especialidades más solicitadas y tendencia en el tiempo -->
+    <app-admin-dashboard
+      *ngIf="esAdministrador()"
+      [citas]="citasFiltradas()"
+      [usuariosRegistrados]="totalUsuarios()"
+      [profesionalesActivos]="totalProfesionales()"
+    ></app-admin-dashboard>
+
+    <ng-template #historialCliente>
+      <section class="client-history">
+        <div class="history-header">
+          <div>
+            <span class="section-label">HISTORIAL</span>
+            <h2>Mis citas</h2>
+          </div>
+        </div>
+
+        <div *ngIf="cargando()" class="calendar-loading">Cargando tu historial...</div>
+        <div *ngIf="error()" class="calendar-error">{{ error() }}</div>
+
+        <!-- Dashboard de paciente: historial con detalle expandible,
+             reseña del doctor, estado de sus citas y resumen por especialidad -->
+        <app-paciente-dashboard
+          *ngIf="!cargando() && !error()"
+          [citas]="historialClienteCitas()"
+        ></app-paciente-dashboard>
+      </section>
+    </ng-template>
+  </main>
+
+  <div class="modal-overlay" *ngIf="citaSeleccionada() as cita" (click)="cerrarDetalleCita()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span class="status" [ngClass]="claseEstado(estadoNombre(cita))">
+          {{ estadoNombre(cita) }}
+        </span>
+        <button class="modal-close" (click)="cerrarDetalleCita()">✕</button>
+      </div>
+
+      <h2>{{ cita.servicio.nombre }}</h2>
+
+      <div class="modal-row">
+        <span class="modal-label">Cliente</span>
+        <span>{{ obtenerNombreCliente(cita) }}</span>
+      </div>
+
+      <div class="modal-row">
+        <span class="modal-label">Profesional</span>
+        <span>{{ obtenerNombreProfesional(cita) }}</span>
+      </div>
+
+      <div class="modal-row">
+        <span class="modal-label">Fecha</span>
+        <span>{{ formatearFecha(cita.fechaCita) }}</span>
+      </div>
+
+      <div class="modal-row">
+        <span class="modal-label">Horario</span>
+        <span>{{ formatearHora(cita.horaInicio) }} - {{ formatearHora(cita.horaFin) }}</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<section class="auth-page">
+  <div class="auth-card">
+
+    <img src="/assets/uploads/shared/SecondarySerena.png" alt="Serena" class="auth-logo-icon" />
+
+    <img src="/assets/uploads/shared/LogoSerena.png" alt="Serena" class="auth-logo-text" />
+    
+    <p class="auth-subtitle">— tu bienestar, nuestra prioridad —</p>
+
+    @if (error()) {
+      <div class="auth-error">{{ error() }}</div>
+    }
+
+    <form [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
+
+      <div class="campo">
+        <div class="campo-input-wrapper">
+          <span class="campo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/>
+            </svg>
+          </span>
+          <input
+            id="correo"
+            type="email"
+            formControlName="correo"
+            placeholder="Usuario"
+          />
+        </div>
+
+        @if (formulario.controls.correo.invalid && formulario.controls.correo.touched) {
+          <span class="campo-error">
+            Ingresa un correo válido.
+          </span>
+        }
+      </div>
+
+      <div class="campo">
+        <div class="campo-input-wrapper">
+          <span class="campo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="5" y="11" width="14" height="9" rx="2"/>
+              <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+            </svg>
+          </span>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="Contraseña"
+          />
+        </div>
+
+        @if (formulario.controls.password.invalid && formulario.controls.password.touched) {
+          <span class="campo-error">
+            La contraseña es obligatoria.
+          </span>
+        }
+      </div>
+
+      <button
+        type="submit"
+        class="boton-primario"
+        [disabled]="enviando()"
+      >
+        <span class="boton-sparkle">✦</span>
+        {{ enviando() ? 'Ingresando...' : 'Iniciar sesión' }}
+        <span class="boton-sparkle">✦</span>
+      </button>
+
+    </form>
+
+    <p class="auth-forgot">
+      <a routerLink="/recuperar">¿Olvidaste tu contraseña?</a>
+    </p>
+
+    <p class="auth-footer">
+      ¿No tienes cuenta?
+      <a routerLink="/register">Regístrate</a>
+    </p>
+
+  </div>
+</section>

@@ -1,0 +1,42 @@
+<div class="dialog-heading">
+  <div class="dialog-icon"><mat-icon>health_and_safety</mat-icon></div>
+  <div><span>Especialidades</span><h2 mat-dialog-title>{{ titulo }}</h2></div>
+</div>
+<mat-dialog-content>
+  @if (data.especialidad) {
+    <div class="detail-status" [class.inactive]="data.especialidad.estadoEspecialidad.nombre === 'Inactiva'">
+      {{ data.especialidad.estadoEspecialidad.nombre }}
+    </div>
+  }
+  <form [formGroup]="formulario" class="specialty-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" maxlength="120" />
+      <mat-icon matSuffix>badge</mat-icon>
+      @if (formulario.controls.nombre.hasError('required')) { <mat-error>El nombre es obligatorio.</mat-error> }
+      @if (formulario.controls.nombre.hasError('minlength')) { <mat-error>Debe tener al menos 3 caracteres.</mat-error> }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Categoría</mat-label>
+      <mat-select formControlName="tipoEspecialidadId" panelClass="serena-specialty-select">
+        @for (tipo of data.tipos; track tipo.id) { <mat-option [value]="tipo.id">{{ tipo.nombre }}</mat-option> }
+      </mat-select>
+      <mat-icon matSuffix>category</mat-icon>
+      <mat-error>Seleccione una categoría.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="descripcion" rows="4" maxlength="255"></textarea>
+      <mat-hint align="end">{{ formulario.controls.descripcion.value.length }}/255</mat-hint>
+    </mat-form-field>
+  </form>
+  @if (error()) { <p class="dialog-error"><mat-icon>error</mat-icon>{{ error() }}</p> }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" [mat-dialog-close]="false" [disabled]="guardando()">{{ esDetalle ? 'Cerrar' : 'Cancelar' }}</button>
+  @if (!esDetalle) {
+    <button mat-flat-button type="button" class="save-button" (click)="guardar()" [disabled]="guardando()">
+      <mat-icon>{{ guardando() ? 'hourglass_top' : 'save' }}</mat-icon>{{ guardando() ? 'Guardando...' : 'Guardar' }}
+    </button>
+  }
+</mat-dialog-actions>
