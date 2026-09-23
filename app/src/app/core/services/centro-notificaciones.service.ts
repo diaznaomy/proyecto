@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
 
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { Notificacion, RolNotificacion } from '../models/notificacion.model';
 import { filtrarPorRol } from '../models/notificacion-config';

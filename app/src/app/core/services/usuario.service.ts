@@ -1,7 +1,7 @@
 // core/services/videojuego.ts
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ApiPaginatedResponse, ApiResponse } from '../models/api-response.model';
 import { Usuario } from '../models/usuario.model';
 import { map } from 'rxjs';

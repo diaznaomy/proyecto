@@ -8,7 +8,7 @@ import {
 
 import {
   environment,
-} from '../../../environments/environment.development';
+} from '../../../environments/environment';
 
 import {
   ApiPaginatedResponse,
@@ -186,7 +186,7 @@ export class PerfilProfesionalService {
     return imageName;
   }
 
-  return `http://localhost:3000/uploads/perfiles/${imageName}`;
+  return `${environment.imageUrl}/perfiles/${imageName}`;
 }
 
 actualizarCompleto(

@@ -22,8 +22,13 @@ const app = express();
 dotenv.config();
 // Puerto que escucha por defecto 300 o definido .env
 const port = process.env.PORT || 3000;
-// Middleware CORS para aceptar llamadas en el servido
-app.use(cors());
+const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:4200")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+// Permite el frontend local y el dominio de GitHub Pages configurado en producción.
+app.use(cors({ origin: allowedOrigins }));
 // Middleware para loggear las llamadas al servidor
 app.use(morgan("dev"));
 // Middleware para gestionar Requests y Response json
@@ -57,8 +62,6 @@ app.use("/profesionales", PerfilProfesionalRoutes.routes);
 
 // Handle errors middleware
 app.use(ErrorMiddleware.handleError);
-
-app.use(cors());
 
 //Acceso a las imágenes
 
