@@ -37,13 +37,7 @@ jobs:
         working-directory: app
         env:
           REPOSITORY_NAME: ${{ github.event.repository.name }}
-          API_URL: ${{ vars.API_URL }}
         run: |
-          if [ -z "$API_URL" ]; then
-            echo "Configure la variable de repositorio API_URL en GitHub antes de publicar."
-            exit 1
-          fi
-          sed -i "s|__API_URL__|${API_URL}|g" src/environments/environment.ts
           npm run build -- --base-href "/${REPOSITORY_NAME}/"
 
       - name: Prepare SPA fallback
